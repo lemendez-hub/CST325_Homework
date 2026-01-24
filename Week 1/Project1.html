@@ -29,18 +29,19 @@
                 myCanvas = document.getElementById("project1_Canvas")
                 canvasCXT = myCanvas.getContext("2d")
                 const myRectangle = new Rectangle(20, 20, "rgb(0, 255, 0)")
-                draw(myRectangle)
-            }
-            function draw(rect){
-                canvasCXT.strokeRect(rect.x, rect.y, 150, 100)
-                canvasCXT.fillStyle = rect.color
-                canvasCXT.fillRect(rect.x, rect.y, 150, 100)
+                myRectangle.draw()
             }
             class Rectangle{
                 constructor(x, y, color){
                     this.x = x
                     this.y = y
                     this.color = color
+
+                    this.draw = function(){
+                        canvasCXT.strokeRect(this.x, this.y, 150, 100)
+                        canvasCXT.fillStyle = this.color
+                        canvasCXT.fillRect(this.x, this.y, 150, 100)
+                    }
                 }
             }
         </script>
