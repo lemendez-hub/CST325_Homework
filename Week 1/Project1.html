@@ -24,6 +24,12 @@
         <script>
             function init(){
                 console.log("Hello World!")
+                myCanvas = document.getElementById("project1_Canvas")
+                canvasCXT = myCanvas.getContext("2d")
+                draw()
+            }
+            function draw(){
+                canvasCXT.fillRect(20, 20, 150, 100)
             }
         </script>
     </head>
