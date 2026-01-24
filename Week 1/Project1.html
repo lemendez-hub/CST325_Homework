@@ -22,16 +22,26 @@
 <html>
     <head>
         <script>
+            var myCanvas
+            var canvasCXT
             function init(){
                 console.log("Hello World!")
                 myCanvas = document.getElementById("project1_Canvas")
                 canvasCXT = myCanvas.getContext("2d")
-                draw()
+                const myRectangle = new Rectangle(20, 20, "rgb(0, 255, 0)")
+                draw(myRectangle)
             }
-            function draw(){
-                canvasCXT.strokeRect(20, 20, 150, 100)
-                canvasCXT.fillStyle = "#90EE90"
-                canvasCXT.fillRect(20, 20, 150, 100)
+            function draw(rect){
+                canvasCXT.strokeRect(rect.x, rect.y, 150, 100)
+                canvasCXT.fillStyle = rect.color
+                canvasCXT.fillRect(rect.x, rect.y, 150, 100)
+            }
+            class Rectangle{
+                constructor(x, y, color){
+                    this.x = x
+                    this.y = y
+                    this.color = color
+                }
             }
         </script>
     </head>
