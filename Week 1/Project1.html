@@ -87,6 +87,7 @@
                 canvasCXT.clearRect(0, 0, myCanvas.width, myCanvas.height);
             
                 for(var i = 0; i < sceneList.length; i++){
+                    sceneList[i].update();
                     sceneList[i].draw();
                 }
             
