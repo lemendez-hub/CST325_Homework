@@ -24,27 +24,33 @@
         <script>
             var myCanvas;
             var canvasCXT;
+            
             var sceneList = [];
-            var frameNum = 0;
-
+            
+            var frameNum = 0;     
+            
             function init(){
                 console.log("Hello World!");
+            
                 myCanvas = document.getElementById("project1_Canvas");
                 canvasCXT = myCanvas.getContext("2d");
+            
                 var myRectangle = new Rectangle(20, 20, "rgb(0, 255, 0)");
                 var myRectangle2 = new Rectangle(100, 20, "rgb(0, 255, 0)");
                 var myRectangle3 = new Rectangle(180, 20, "rgb(0, 255, 0)");                
+            
                 sceneList.push(myRectangle);
                 sceneList.push(myRectangle2);
                 sceneList.push(myRectangle3);                
+            
                 updateAndDraw();
             }
+            
             class Rectangle{
                 constructor(x, y, color){
                     this.x = x;
                     this.y = y;
                     this.color = color;
-
                     this.draw = function(){
                         canvasCXT.strokeRect(this.x, this.y,50, 50);
                         canvasCXT.fillStyle = this.color;
@@ -52,21 +58,35 @@
                     }
                 }
             }
+            
             function updateAndDraw(){
                 frameNum++;
+            
                 console.log("Frame: ", frameNum);
+            
                 canvasCXT.clearRect(0, 0, myCanvas.width, myCanvas.height);
+            
                 for(var i = 0; i < sceneList.length; i++){
                     sceneList[i].draw();
                 }
+            
+                updateStats();
                 requestAnimationFrame(updateAndDraw);
+            }
+            
+            function updateStats(){
+                var p = document.getElementById("frameCount");
+                p.innerText = "Frame Count: " + frameNum;
+            
+                var p = document.getElementById("rectangleCount");
+                p.innerText = "Rectangle Count: " + sceneList.length;
             }
         </script>
     </head>
     <body onload="init()">
         <canvas id="project1_Canvas" width="300" height="200" style="border:1px solid gray"></canvas>
         <br>
-        <p>Frame Count: 0</p>
-        <p>Rectangle Count: 0</p>
+        <p id="frameCount">Frame Count: 0</p>
+        <p id="rectangleCount">Rectangle Count: 0</p>
     </body>
 </html>
