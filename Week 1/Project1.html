@@ -89,6 +89,10 @@
                 for(var i = 0; i < sceneList.length; i++){
                     sceneList[i].update();
                     sceneList[i].draw();
+                    if(sceneList[i].y > myCanvas.height){
+                        sceneList.splice(i, 1);
+                        i--;
+                    }
                 }
             
                 updateStats();
