@@ -60,6 +60,17 @@
             }
             
             function updateAndDraw(){
+                var randX = Math.random() * (myCanvas.width - 50);
+                var randY = Math.random() * (myCanvas.width - 50);
+
+                var randR = Math.floor(Math.random() * 256);
+                var randG = Math.floor(Math.random() * 256);
+                var randB = Math.floor(Math.random() * 256);
+
+                var randColor = "rgb(" + randR + ", " + randG + ", " + randB + ")";
+                var myRandRectangle = new Rectangle(randX, randY, randColor);
+                sceneList.push(myRandRectangle);
+
                 frameNum++;
             
                 console.log("Frame: ", frameNum);
