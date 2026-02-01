@@ -84,12 +84,11 @@ class Vector3{
         return this;
     }
     //----------------------------------------------------------------------------- 
-    length() {
+    length(){
         // todo - return the magnitude (A.K.A. length) of 'this' vector
         // This should NOT change the values of this.x, this.y, and this.z
-        return 0;
+        return Math.sqrt(this.lengthSqr());;
     }
-
     //----------------------------------------------------------------------------- 
     lengthSqr() {
         // todo - return the squared magnitude of this vector ||v||^2
