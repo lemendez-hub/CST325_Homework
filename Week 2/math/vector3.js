@@ -75,12 +75,14 @@ class Vector3{
         return this;
     }
     //----------------------------------------------------------------------------- 
-    multiplyScalar(scalar) {
+    multiplyScalar(scalar){
         // multiply 'this' vector by "scalar"
         // This SHOULD change the values of this.x, this.y, and this.z
+        this.x = this.x * scalar;
+        this.y = this.y * scalar;
+        this.z = this.z * scalar;
         return this;
     }
-
     //----------------------------------------------------------------------------- 
     length() {
         // todo - return the magnitude (A.K.A. length) of 'this' vector
