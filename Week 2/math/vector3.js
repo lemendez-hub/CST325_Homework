@@ -57,12 +57,14 @@ class Vector3{
         return this;
     }
     //----------------------------------------------------------------------------- 
-    add(v) {
+    add(v){
         // todo - add v to 'this' vector
         // This SHOULD change the values of this.x, this.y, and this.z
+        this.x = this.x + v.x;
+        this.y = this.y + v.y;
+        this.z = this.z + v.z;
         return this;
     }
-
     //----------------------------------------------------------------------------- 
     subtract(v) {
         // todo - subtract v from 'this' vector
