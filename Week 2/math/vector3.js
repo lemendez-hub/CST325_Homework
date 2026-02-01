@@ -48,12 +48,14 @@ class Vector3{
         return this;
     }
     //----------------------------------------------------------------------------- 
-    negate() {
+    negate(){
         // multiply 'this' vector by -1
         // This SHOULD change the values of this.x, this.y, and this.z
+        this.x = this.x * -1;
+        this.y = this.y * -1;
+        this.z = this.z * -1;
         return this;
     }
-
     //----------------------------------------------------------------------------- 
     add(v) {
         // todo - add v to 'this' vector
