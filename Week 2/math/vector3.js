@@ -110,12 +110,11 @@ class Vector3{
         return this;
     }
     //----------------------------------------------------------------------------- 
-    dot(other) {
+    dot(other){
         // todo - return the dot product between this vector and "other"
         // This should NOT change the values of this.x, this.y, and this.z
-        return 0;
+        return this.x * other.x + this.y * other.y + this.z * other.z;
     }
-
     //============================================================================= 
     // The functions below must be completed in order to receive an "A"
 
