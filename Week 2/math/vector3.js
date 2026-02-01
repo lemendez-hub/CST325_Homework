@@ -19,12 +19,12 @@ class Vector3{
         if(y == undefined){
             this.y = 0;
         }else{
-            this.y = x;
+            this.y = y;
         }
         if(z == undefined){
             this.z = 0;
         }else{
-            this.z = x;
+            this.z = z;
         }
     }
     //----------------------------------------------------------------------------- 
@@ -32,7 +32,7 @@ class Vector3{
         // todo set 'this' object's values to those from x, y, and z
         this.x = x;
         this.y = y;
-        this.z - z;
+        this.z = z;
         return this;
     }
     //----------------------------------------------------------------------------- 
