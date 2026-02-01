@@ -87,7 +87,7 @@ class Vector3{
     length(){
         // todo - return the magnitude (A.K.A. length) of 'this' vector
         // This should NOT change the values of this.x, this.y, and this.z
-        return 0;
+        return Math.sqrt(this.lengthSqr());
     }
     //----------------------------------------------------------------------------- 
     lengthSqr(){
@@ -100,12 +100,15 @@ class Vector3{
         return this.x * this.x + this.y * this.y + this.z * this.z;
     }
     //----------------------------------------------------------------------------- 
-    normalize() {
+    normalize(){
         // todo - Change the components of this vector so that its magnitude will equal 1.
         // This SHOULD change the values of this.x, this.y, and this.z
+        var l = this.length();
+        if(l != 0){
+            this.multiplyScalar(1 / l);
+        }
         return this;
     }
-
     //----------------------------------------------------------------------------- 
     dot(other) {
         // todo - return the dot product between this vector and "other"
