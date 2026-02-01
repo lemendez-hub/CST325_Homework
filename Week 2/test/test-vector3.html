@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vector3 Unit Tests</title>
+    <script src="../math/vector3.js"></script>
+    <script src="test.js"></script>
+
+    <script>
+        let reporter = null;
+
+        function testVector3() {
+            reporter = new TestReporter();
+            reporter.reportSectionHeader('Tests Required to Earn a "B"');
+
+            testInitialization();
+            testDefaultValues();
+            testSet();
+            testCopy();
+            testAdd();
+            testSubtract();
+            testNegate();
+            testMultiplyScalar();
+            testLength();
+            testLengthSquared();
+            testNormalize();
+            testDotProduct();
+
+            reporter.reportSectionHeader('Tests Required to Earn an "A"');
+
+            testFromTo();
+            testRescale();
+            testAngle();
+            testProjection();
+
+            reporter.reportFinalResults();
+        }
+
+        function testInitialization() {
+            reporter.reportTestStart("Initialization");
+            try {
+                const v1 = new Vector3(1, 2, 3);
+                assert(vectorEqual(v1, 1, 2, 3), "Initialization");
+                reporter.reportTestEnd(true);
+            } catch (err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        function testDefaultValues() {
+            reporter.reportTestStart("Default Values");
+            try {
+                const v2 = new Vector3();
+                assert(vectorEqual(v2, 0, 0, 0), "Default Values");
+                reporter.reportTestEnd(true);
+            } catch (err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        function testSet() {
+            reporter.reportTestStart("Set");
+            try {
+                const v3 = new Vector3().set(1, 2, 3);
+                assert(vectorEqual(v3, 1, 2, 3), "Set");
+                reporter.reportTestEnd(true);
+            } catch (err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        function testCopy() {
+            reporter.reportTestStart("Copy");
+            try {
+                const v4 = new Vector3();
+                const v5 = new Vector3(3, 2, 1);
+                const self = v4.copy(v5);
+                assert(vectorEqual(v4, 3, 2, 1), "Copy");
+                assert(v4 === self, "Copy (return value)");
+                reporter.reportTestEnd(true);
+            } catch (err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        function testAdd() {
+            reporter.reportTestStart("Add");
+            try {
+                const v6 = new Vector3(1, 1, 1);
+                const v7 = new Vector3(3, 2, 1);
+                const self = v6.add(v7);
+                assert(vectorEqual(v6, 4, 3, 2), "Add");
+                assert(vectorEqual(v7, 3, 2, 1), "Add (unchanged operand)");
+                assert(v6 === self, "Add (return value)");
+                reporter.reportTestEnd(true);
+            } catch (err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        function testSubtract() {
+            reporter.reportTestStart("Subtract");
+            try {
+                const v8 = new Vector3(1, 1, 1);
+                const v9 = new Vector3(3, 2, 1);
+                const self = v8.subtract(v9);
+                assert(vectorEqual(v8, -2, -1, 0), "Subtract");
+                assert(vectorEqual(v9, 3, 2, 1), "Subtract (unchanged operand)");
+                assert(v8 === self, "Subtract (return value)");
+                reporter.reportTestEnd(true);
+            } catch (err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        function testNegate() {
+            reporter.reportTestStart("Negate");
+            try {
+                const v10 = new Vector3(2, 4, 6).negate();
+                assert(vectorEqual(v10, -2, -4, -6), "Negate");
+                reporter.reportTestEnd(true);
+            } catch (err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        function testMultiplyScalar() {
+            reporter.reportTestStart("Multiply Scalar");
+            try {
+                const v11 = new Vector3(2, 4, 6).multiplyScalar(2);
+                assert(vectorEqual(v11, 4, 8, 12), "Multiply Scalar");
+                reporter.reportTestEnd(true);
+            } catch (err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        function testLength() {
+            reporter.reportTestStart("Length");
+            try {
+                const v1 = new Vector3(3, 4, 0);
+                assert(floatEqual(v1.length(), 5), "Length (positive components)");
+
+                const v2 = new Vector3(0, 0, 0);
+                assert(floatEqual(v2.length(), 0), "Length (zero vector)");
+
+                const v3 = new Vector3(-3, -4, 0);
+                assert(floatEqual(v3.length(), 5), "Length (negative components)");
+
+                reporter.reportTestEnd(true);
+            } catch (err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        function testLengthSquared() {
+            reporter.reportTestStart("Length Squared");
+            try {
+                const lengthSqr = new Vector3(3, 0, 4).lengthSqr();
+                assert(floatEqual(lengthSqr, 25), "Length Squared");
+                reporter.reportTestEnd(true);
+            } catch (err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        function testNormalize() {
+            reporter.reportTestStart("Normalize");
+            try {
+                // Test normalization of a general vector
+                const v1 = new Vector3(3, 4, 0).normalize();
+                assert(floatEqual(v1.length(), 1), "Normalize (unit length)");
+                assert(vectorEqual(v1, 0.6, 0.8, 0), "Normalize (values)");
+
+                // Test normalization of a zero vector
+                const v2 = new Vector3(0, 0, 0);
+                try {
+                    v2.normalize();
+                    assert(false, "Normalize (zero vector should not succeed)");
+                } catch (err) {
+                    assert(true, "Normalize (zero vector handled)");
+                }
+
+                reporter.reportTestEnd(true);
+            } catch (err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        function testDotProduct() {
+            reporter.reportTestStart("Dot Product");
+            try {
+                // Orthogonal vectors
+                const v1 = new Vector3(1, 0, 0);
+                const v2 = new Vector3(0, 1, 0);
+                const dotOrthogonal = v1.dot(v2);
+                assert(floatEqual(dotOrthogonal, 0), "Dot Product (orthogonal)");
+
+                // Parallel vectors
+                const v3 = new Vector3(1, 1, 1);
+                const v4 = new Vector3(2, 2, 2);
+                const dotParallel = v3.dot(v4);
+                assert(floatEqual(dotParallel, v3.length() * v4.length()), "Dot Product (parallel)");
+
+                // Anti-parallel vectors
+                const v5 = new Vector3(1, 0, 0);
+                const v6 = new Vector3(-1, 0, 0);
+                const dotAntiParallel = v5.dot(v6);
+                assert(floatEqual(dotAntiParallel, -v5.length() * v6.length()), "Dot Product (anti-parallel)");
+
+                // General case
+                const v7 = new Vector3(1, 2, 3);
+                const v8 = new Vector3(4, 5, 6);
+                const dotGeneral = v7.dot(v8);
+                const expectedDotGeneral = (1 * 4) + (2 * 5) + (3 * 6);
+                assert(floatEqual(dotGeneral, expectedDotGeneral), "Dot Product (general case)");
+
+                reporter.reportTestEnd(true);
+            } catch (err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        function testFromTo() {
+            reporter.reportTestStart("From-To");
+            try {
+                const from = new Vector3(1, 2, 3);
+                const to = new Vector3(4, 5, 6);
+                const result = Vector3.fromTo(from, to);
+                assert(vectorEqual(result, 3, 3, 3), "From-To");
+                reporter.reportTestEnd(true);
+            } catch (err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        function testRescale() {
+            reporter.reportTestStart("Rescale");
+            try {
+                const v = new Vector3(3, 4, 0);
+                v.rescale(10);
+                assert(floatEqual(v.length(), 10), "Rescale");
+                reporter.reportTestEnd(true);
+            } catch (err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //-------------------------------------------------------------------------------
+        function testAngle() {
+            reporter.reportTestStart("angle");
+
+            var v1 = new Vector3(1, 0, 0);
+            var v2 = new Vector3(0, 1, 0);
+            var v3 = new Vector3(-1, 0, 0);
+
+            try {
+                var a1 = Vector3.angle(v1, v2);
+                assert(floatEqual(a1, 90), "angle 90");
+                var a2 = Vector3.angle(v1, v3);
+                assert(floatEqual(a2, 180), "angle 180");
+                var a3 = Vector3.angle(v1, v1);
+                assert(floatEqual(a3, 0), "angle 0");
+            } catch (err) {
+                reporter.reportTestEnd(false);
+                return;
+            }
+
+            reporter.reportTestEnd(true);
+        }
+
+        //-------------------------------------------------------------------------------
+        function testProjection() {
+            reporter.reportTestStart("projection");
+
+            var toProject = new Vector3(1, 2, 3);
+            var ontoVector = new Vector3(2, 0, 0);
+            var result = Vector3.project(toProject, ontoVector);
+
+            try {
+                assert(vectorEqual(result, 1, 0, 0), "test-projection");
+                assert(vectorEqual(toProject, 1, 2, 3), "test-projection toProject");
+                assert(vectorEqual(ontoVector, 2, 0, 0), "test-projection ontoVector");
+            } catch (err) {
+                reporter.reportTestEnd(false);
+                return;
+            }
+
+            reporter.reportTestEnd(true);
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .test-container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            margin-top: 40px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            color: #333;
+        }
+
+        table.test-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table.test-table th,
+        table.test-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        table.test-table th {
+            background-color: #f9f9f9;
+            text-align: left;
+        }
+
+        .passed {
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .failed {
+            color: #721c24;
+            font-weight: bold;
+        }
+
+        .final-results {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .final-results h1 {
+            color: #333;
+        }
+
+        .final-results img {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body onload="testVector3()">
+    <div class="test-container"></div>
+</body>
+
+</html>
