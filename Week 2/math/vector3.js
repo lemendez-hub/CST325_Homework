@@ -87,19 +87,18 @@ class Vector3{
     length(){
         // todo - return the magnitude (A.K.A. length) of 'this' vector
         // This should NOT change the values of this.x, this.y, and this.z
-        return Math.sqrt(this.lengthSqr());;
+        return 0;
     }
     //----------------------------------------------------------------------------- 
-    lengthSqr() {
+    lengthSqr(){
         // todo - return the squared magnitude of this vector ||v||^2
         // This should NOT change the values of this.x, this.y, and this.z
 
         // There are many occasions where knowing the exact length is unnecessary 
         // and the square can be substituted instead (for performance reasons).  
         // This function should NOT have to take the square root of anything.
-        return 0;
+        return this.x * this.x + this.y * this.y + this.z * this.z;
     }
-
     //----------------------------------------------------------------------------- 
     normalize() {
         // todo - Change the components of this vector so that its magnitude will equal 1.
