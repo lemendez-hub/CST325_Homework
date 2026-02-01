@@ -8,14 +8,25 @@
  * instantiation process IS similar to other object oriented languages => new Vector3()
  */
 
-class Vector3 {
-    constructor(x, y, z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+class Vector3{
+    constructor(x, y, z){
         // todo - make sure to set a default value in case x, y, or z is not passed in
+        if(x == undefined){
+            this.x = 0;
+        }else{
+            this.x = x;
+        }
+        if(y == undefined){
+            this.y = 0;
+        }else{
+            this.y = x;
+        }
+        if(z == undefined){
+            this.z = 0;
+        }else{
+            this.z = x;
+        }
     }
-
     //----------------------------------------------------------------------------- 
     set(x, y, z) {
         // todo set 'this' object's values to those from x, y, and z
