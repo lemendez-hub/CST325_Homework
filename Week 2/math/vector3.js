@@ -36,16 +36,17 @@ class Vector3{
         return this;
     }
     //----------------------------------------------------------------------------- 
-    clone() {
+    clone(){
         return new Vector3(this.x, this.y, this.z);
     }
-
     //----------------------------------------------------------------------------- 
-    copy(other) {
+    copy(other){
         // copy the values from other into 'this'
+        this.x = other.x;
+        this.y = other.y;
+        this.z = other.z;
         return this;
     }
-
     //----------------------------------------------------------------------------- 
     negate() {
         // multiply 'this' vector by -1
