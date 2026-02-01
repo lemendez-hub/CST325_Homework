@@ -28,11 +28,13 @@ class Vector3{
         }
     }
     //----------------------------------------------------------------------------- 
-    set(x, y, z) {
+    set(x, y, z){
         // todo set 'this' object's values to those from x, y, and z
+        this.x = x;
+        this.y = y;
+        this.z - z;
         return this;
     }
-
     //----------------------------------------------------------------------------- 
     clone() {
         return new Vector3(this.x, this.y, this.z);
