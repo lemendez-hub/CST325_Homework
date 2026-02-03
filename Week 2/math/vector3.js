@@ -122,23 +122,37 @@ class Vector3{
     //----------------------------------------------------------------------------- 
     rescale(newScale) {
         // todo - Change this vector's length to be newScale
+        this.normalize();
+        this.multiplyScalar(newScale);
         return this;
     }
 
     //----------------------------------------------------------------------------- 
     static fromTo(fromPoint, toPoint) {
-        if (!(fromPoint instanceof Vector3) || !(toPoint instanceof Vector3)) {
+        if(!(fromPoint instanceof Vector3) || !(toPoint instanceof Vector3)){
             console.error("fromTo requires two vectors: 'from' and 'to'");
         }
         // todo - return the vector that goes from "fromPoint" to "toPoint"
         //        NOTE - "fromPoint" and "toPoint" should not be altered
+        return toPoint.clone().subtract(fromPoint);
     }
 
     //----------------------------------------------------------------------------- 
     static angle(v1, v2) {
         // todo - calculate the angle in degrees between vectors v1 and v2. Do NOT
         //        change any values on the vectors themselves
-        return 0;
+        var angleProduct = v1.length() * v2.length();
+        if(angleProduct == 0){
+            return 0;
+        }
+        var d = v1.dot(v2);
+        var cosTheta = d / angleProduct;
+        if(cosTheta > 1){
+            cosTheta = 1;
+        }else if(cosTheta < -1){
+            cosTheta = -1;
+        }
+        return Math.acos(cosTheta) * (180/Math.PI);
     }
 
     //----------------------------------------------------------------------------- 
@@ -147,5 +161,11 @@ class Vector3{
         //        but whose length is the projection of "vectorToProject" onto "otherVector"
         //        NOTE - "vectorToProject" and "otherVector" should NOT be altered (i.e. use clone)
         //        See "Vector Projection Slides" under "Extras" for more info.
+        var length = otherVector.lengthSqr();
+        if(length == 0){
+            return new Vector3();
+        }
+        var scalar = vectorToProject.dot(otherVector)/length;
+        return otherVector.clone().multiplyScalar(scalar);
     }
 }
