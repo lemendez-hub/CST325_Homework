@@ -77,8 +77,8 @@ class Sphere{
         }else{
             return result; // Both are behind the ray origin
         }
-        var hit_Point = rayOrigin.clone().add(rayDirection.clone().multiplyScalar(t));
-        var hit_Normal = hit_Point.clone().subtract(this.center).normalize();
+        var hit_Point = rayOrigin.clone().add(rayDirection.clone().multiplyScalar(t)); // calculates the intersection point
+        var hit_Normal = hit_Point.clone().subtract(this.center).normalize(); // the direction the sphere surface is facing at the hit point
         result.hit = true;
         result.point = hit_Point;
         result.normal = hit_Normal;
