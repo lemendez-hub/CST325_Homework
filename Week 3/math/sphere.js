@@ -41,15 +41,8 @@ class Sphere{
         // 1. Understand the math: Review the basics of ray-sphere intersections. The goal is to solve 
         //    for intersection points using the quadratic equation.
         //
-        
-        //
         // 2. Identify vectors and setup: Compute the vector from the ray's origin to the sphere's center. 
         //    Use this to derive the quadratic coefficients.
-        //
-
-
-
-
         //
         // 3. Compute the discriminant: Solve the quadratic equation. The discriminant determines if there 
         //    are real solutions and thus potential intersections.
@@ -69,11 +62,29 @@ class Sphere{
         //      return { hit: false };
         //    If valid intersection:
         //      return { hit: true, point: <Vector3>, normal: <Vector3>, distance: <Number> };
+        
+        
+        
+        // Attempted to create steps to try to do implementation correctly \\
 
+        // 1. Get the ray origin and direction
         var rayOrigin = ray.origin; // Getting the starting point of the ray
         var rayDirection = ray.direction; // Getting the direction the ray is going
-        var vectorRS = this.center.clone().subtract(rayOrigin); // Creating 
         
+        // 2. Creating a vector with the length of ray origin to sphere center
+        var vectorRS = this.center.clone().subtract(rayOrigin); // Creating a vector that points from the vector's origin to the sphere's center
+        
+        // 3. Checking if the ray starts inside the sphere
+        var radiusSqrd = this.radius * this.radius; // This is Radius^2
+        var vectorRS_Sqrd = vectorRS.dot(vectorRS); // The squared distance from the ray origin to the sphere center
+        if(vectorRS_Sqrd < radiusSqrd){
+            return; //Only happends if the origin is in the sphere
+        }
+
+        // 4. Quadratic Coefficients
+        var a = rayDirection.dot(rayDirection); // The squared length of the ray direction
+        var b = 2 * vectorRS.dot(rayDirection); // How aligned the ray is pointing toward/away form the center of the sphere
+        var c = vectorRS_Sqrd - radiusSqrd; // Measures how far the ray origin is from the sphere surface
         return result;
     }
 }
