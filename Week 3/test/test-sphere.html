@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sphere Tests Report</title>
+    
+    <!-- Include your math and test scripts here -->
+    <script src="../math/vector3.js"></script>
+    <script src="../math/ray.js"></script>
+    <script src="../math/sphere.js"></script>
+    <script src="test.js"></script> 
+
+    <script>
+        let reporter = null;
+        
+        //---------------------------------------------------------------------------
+        function testSphere() {
+            reporter = new TestReporter();
+            reporter.reportSectionHeader('Tests required to earn a "B"');
+            
+            testInitialization();
+            testDefaultValues();
+            testValidIntersection();
+            testInvalidIntersection();
+            testNegativeIntersection();
+            testNormal();
+
+            reporter.reportSectionHeader('Tests required to earn an "A"');
+            
+            testTangentIntersection();
+            testNegativeTangent();
+            testInsideSphere();
+
+            reporter.reportFinalResults();
+        }
+
+        //---------------------------------------------------------------------------
+        function testInitialization() {
+            reporter.reportTestStart("Initialization");
+
+            try {
+                const s1 = new Sphere(new Vector3(1, 2, 3), 10);
+                assert(sphereEqual(s1, 1, 2, 3, 10), "Initialization");
+                reporter.reportTestEnd(true);
+            } catch(err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //---------------------------------------------------------------------------
+        function testDefaultValues() {
+            reporter.reportTestStart("Default Values");
+            
+            try {
+                const s2 = new Sphere();
+                assert(sphereEqual(s2, 0, 0, 0, 1), "Default Values");
+                reporter.reportTestEnd(true);
+            } catch(err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //---------------------------------------------------------------------------
+        function testValidIntersection() {
+            reporter.reportTestStart("Valid Intersection");
+
+            
+            try {
+                // typical valid intersection (2 points)
+                const r1 = new Ray(new Vector3(0, 0, -10), new Vector3(0, 0, 1));
+                const s3 = new Sphere(new Vector3(), 1);
+                const castResult = s3.raycast(r1);
+
+                assert(castResult.hit === true, "Typical Valid Hit");
+                assert(vectorEqual(castResult.point, 0, 0, -1), "Typical Valid Hit Point");
+                assert(vectorEqual(castResult.normal, 0, 0, -1), "Typical Valid Hit Normal");
+                assert(floatEqual(castResult.distance, 9), "Typical Valid Hit Distance");
+                reporter.reportTestEnd(true);
+            } catch(err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //---------------------------------------------------------------------------
+        function testTangentIntersection() {
+            reporter.reportTestStart("Tangent Intersection");
+
+            try {
+                // unlikely valid intersection (1 point)
+                const s4 = new Sphere(new Vector3(-1, 0, 0), 2);
+                const r2 = new Ray(new Vector3(-3, 0, -10), new Vector3(0, 0, 1));
+                const castResult = s4.raycast(r2);
+
+                assert(castResult.hit === true, "Tangent Valid Hit");
+                assert(vectorEqual(castResult.point, -3, 0, 0), "Tangent Valid Hit Point");
+                assert(vectorEqual(castResult.normal, -1, 0, 0), "Tangent Valid Hit Normal");
+                assert(floatEqual(castResult.distance, 10), "Tangent Valid Hit Distance");
+                reporter.reportTestEnd(true);
+            } catch(err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //---------------------------------------------------------------------------
+        function testInvalidIntersection() {
+            reporter.reportTestStart("Invalid Intersection");
+
+            try {
+                // no intersection (0 points)
+                const s4 = new Sphere(new Vector3(-1, 0, 0), 2);
+                const r3 = new Ray(new Vector3(0, 0, -10), new Vector3(-1, 0, 1));
+                const castResult = s4.raycast(r3);
+
+                assert(castResult.hit === false, "Typical Invalid");
+                reporter.reportTestEnd(true);
+            } catch(err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //---------------------------------------------------------------------------
+        function testNegativeIntersection() {
+            reporter.reportTestStart("Negative Intersection");
+
+            
+            try {
+                // typical invalid intersection (2 negative points)
+                const s4 = new Sphere(new Vector3(-1, 0, 0), 2);
+                const r4 = new Ray(new Vector3(-1, 0, 10), new Vector3(0, 0, 1));
+                const castResult = s4.raycast(r4);
+
+                assert(castResult.hit === false, "Invalid 2 Negative");
+                reporter.reportTestEnd(true);
+            } catch(err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //---------------------------------------------------------------------------
+        function testInsideSphere() {
+            reporter.reportTestStart("Inside Sphere");
+
+            try {
+                // invalid intersection (ray origin is inside sphere)
+                const r5 = new Ray(new Vector3(), new Vector3(0, 0, 1));
+                const s5 = new Sphere();
+                const castResult = s5.raycast(r5);
+
+                assert(castResult.hit === false, "Invalid - Inside Sphere");
+                reporter.reportTestEnd(true);
+            } catch(err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //---------------------------------------------------------------------------
+        function testNegativeTangent() {
+            reporter.reportTestStart("Negative Tangent");
+
+            try {
+                // unlikely invalid intersection (1 negative point)
+                const r6 = new Ray(new Vector3(-1, 0, 10), new Vector3(0, 0, 1));
+                const s6 = new Sphere();
+                const castResult = s6.raycast(r6);
+
+                assert(castResult.hit === false, "Invalid 1 Negative");
+                reporter.reportTestEnd(true);
+            } catch(err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //---------------------------------------------------------------------------
+        function testNormal() {
+            reporter.reportTestStart("Normal");
+
+            try {
+                // test normal at intersection point
+                const r6 = new Ray(new Vector3(0, 0, 10), new Vector3(0, 0, -1));
+                const s6 = new Sphere(new Vector3(-1, 0, 0), 1);
+                const castResult = s6.raycast(r6);
+
+                assert(vectorEqual(castResult.normal, 1, 0, 0), "Normal Check");
+                reporter.reportTestEnd(true);
+            } catch(err) {
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //---------------------------------------------------------------------------
+        window.onload = testSphere;
+    </script>
+    
+    <!-- CSS Styling Moved to the Bottom -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .test-container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-header {
+            margin-top: 40px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            color: #333;
+        }
+
+        table.test-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table.test-table th, table.test-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        table.test-table th {
+            background-color: #f9f9f9;
+            text-align: left;
+        }
+
+        .passed {
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .failed {
+            color: #721c24;
+            font-weight: bold;
+        }
+
+        .final-results {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .final-results h1 {
+            color: #333;
+        }
+
+        .final-results img {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container">
+        <!-- Test results will be rendered here by TestReporter -->
+    </div>
+</body>
+
+</html>

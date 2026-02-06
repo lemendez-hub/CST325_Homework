@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Plane Tests Report</title>
+    
+    <!-- Include your math and test scripts here -->
+    <script src="../math/vector3.js"></script>
+    <script src="../math/ray.js"></script>
+    <script src="../math/plane.js"></script>
+    <script src="test.js"></script> 
+
+    <script>
+        let reporter = null;
+
+        //---------------------------------------------------------------------------
+        function testPlane() {
+            reporter = new TestReporter();
+            reporter.reportSectionHeader('Tests required to pass to earn a "B"');
+            
+            testInitialization();
+            testDefaultValues();
+            testValidIntersection();
+
+            reporter.reportSectionHeader('Tests required to pass to earn an "A"');
+            
+            testCoplanarCase();
+            testBackfaceCase();
+
+            reporter.reportFinalResults();
+        }
+
+        //---------------------------------------------------------------------------
+        function testInitialization() {
+            reporter.reportTestStart("Initialization");
+
+            try {
+                var p1 = new Plane(new Vector3(1, 2, 3), new Vector3(3, 2, 1));
+                var normalizedNormal = new Vector3(1, 2, 3).normalize();
+                assert(vectorEqual(p1.normal, normalizedNormal), "Initialization - Normal");
+                assert(vectorEqual(p1.validPoint, 3, 2, 1), "Initialization - Valid Point");
+
+                reporter.reportTestEnd(true);
+            } catch(err) {
+                console.error(err);
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //---------------------------------------------------------------------------
+        function testDefaultValues() {
+            reporter.reportTestStart("Default Values");
+
+            try {
+                var p2 = new Plane();
+                assert(vectorEqual(p2.normal, 0, 1, 0), "Default Values - Normal");
+                assert(vectorEqual(p2.validPoint, 0, 0, 0), "Default Values - Valid Point");
+
+                reporter.reportTestEnd(true);
+            } catch(err) {
+                console.error(err);
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //---------------------------------------------------------------------------
+        function testValidIntersection() {
+            reporter.reportTestStart("Valid Intersections");
+
+            try {
+                // First valid intersection
+                var p3 = new Plane(new Vector3(0, 0, -1), new Vector3(0, 0, 2));
+                var r1 = new Ray(new Vector3(0, 0, -10), new Vector3(0, 0, 1));
+                var castResult1 = p3.raycast(r1);
+                assert(castResult1.hit === true, "Typical Valid Intersection Success");
+                assert(vectorEqual(castResult1.point, 0, 0, 2), "Typical Valid Intersection Point");
+                assert(vectorEqual(castResult1.normal, 0, 0, -1), "Typical Valid Intersection Normal");
+                assert(floatEqual(castResult1.distance, 12), "Typical Valid Intersection Distance");
+
+                // Second valid intersection
+                var p4 = new Plane(new Vector3(1, 1, -1), new Vector3(-1, -1, 10));
+                var r2 = new Ray(new Vector3(0, 0, -10), new Vector3(0, 0, 1));
+                var castResult2 = p4.raycast(r2);
+                assert(castResult2.hit === true, "Typical Valid Intersection Success 2");
+                assert(vectorEqual(castResult2.point, 0, 0, 12), "Typical Valid Intersection Point 2");
+                assert(vectorEqual(castResult2.normal, 0.5773502691896258, 0.5773502691896258, -0.5773502691896258), "Typical Valid Intersection Normal 2");
+                assert(floatEqual(castResult2.distance, 22), "Typical Valid Intersection Distance 2");
+
+                reporter.reportTestEnd(true);
+            } catch(err) {
+                console.error(err);
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //---------------------------------------------------------------------------
+        function testCoplanarCase() {
+            reporter.reportTestStart("Coplanar Case");
+
+            try {
+                // Coplanar case: no intersection
+                var p5 = new Plane(new Vector3(0, 0, 1), new Vector3(0, 0, 1));
+                var r3 = new Ray(new Vector3(1, 1, 1), new Vector3(1, 0, 0));
+                var castResult = p5.raycast(r3);
+                assert(castResult.hit === false, "Fail Case - Coplanar");
+                reporter.reportTestEnd(true);
+            } catch(err) {
+                console.error(err);
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //---------------------------------------------------------------------------
+        function testBackfaceCase() {
+            reporter.reportTestStart("Back Face Case");
+
+            try {
+                // Back face case: hitting the back face should not register a hit
+                var p6 = new Plane(new Vector3(0, 0, 1), new Vector3(0, 0, 1));
+                var r4 = new Ray(new Vector3(0, 0, -10), new Vector3(0, 0, 1));
+                var castResult = p6.raycast(r4);
+                assert(castResult.hit === false, "Fail Case - Back Face");
+                reporter.reportTestEnd(true);
+            } catch(err) {
+                console.error(err);
+                reporter.reportTestEnd(false);
+            }
+        }
+
+        //---------------------------------------------------------------------------
+        window.onload = testPlane;
+    </script>
+    
+    <!-- CSS Styling Moved to the Bottom -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .test-container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-header {
+            margin-top: 40px;
+            font-size: 1.5em;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            color: #333;
+        }
+
+        table.test-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table.test-table th, table.test-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        table.test-table th {
+            background-color: #f9f9f9;
+            text-align: left;
+        }
+
+        .passed {
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .failed {
+            color: #721c24;
+            font-weight: bold;
+        }
+
+        .final-results {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .final-results h1 {
+            color: #333;
+        }
+
+        .final-results img {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container">
+        <!-- Test results will be rendered here by TestReporter -->
+    </div>
+</body>
+
+</html>
