@@ -86,5 +86,34 @@ class Sphere{
         var b = 2 * vectorRS.dot(rayDirection); // How aligned the ray is pointing toward/away form the center of the sphere
         var c = vectorRS_Sqrd - radiusSqrd; // Measures how far the ray origin is from the sphere surface
         return result;
+
+        // 5. The Discriminant
+        var discriminant = (b * b) - (4 * a * c); // Computing the discriminant
+        if(discriminant < 0){
+            return; // Negative, ray missed
+        }
+        var dis_Sqrd = Math.sqrt(discriminant);
+        var res1 = (-b - dis_Sqrd) / (2 * a); // Result 1 using "-"
+        var res2 = (-b + dis_Sqrd) / (2 * a); // Result 2 using "+"
+
+        // 6. Validating
+        var t = null;
+        if(t1 > 0 && t2 > 0){
+            t = Math.min(t1, t2); // Closest
+        }else if(t1 > 0){
+            t = t1;
+        }else if(t2 > 0){
+            t = t2;
+        }else{
+            return result; // Both are behind the ray origin
+        }
+        var hit_Point = rayOrigin.clone().add(rayDirection.clone.multiplyScalar(t));
+        var hit_Normal = hit_Point.clone().subtract(this.center).normalize();
+        result.hit = true;
+        result.point = hit_Point;
+        result.normal = hit_Normal;
+        result.distance = t;
+
+        return result;
     }
 }
