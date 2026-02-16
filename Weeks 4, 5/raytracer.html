@@ -42,7 +42,7 @@ const imageData = canvasContext.getImageData(0, 0, pixelsAcross, pixelsDown);
 
 // if this changes, your code should still work
 const fov = 45; 
-let fovRadians = (fov * Math.PI) / 180 // todo -> convert degrees to radians
+let fovRadians = (fov * Math.PI) / 180; // todo -> convert degrees to radians
 let pixelWidth = 2 / pixelsAcross; // todo -> what's the size of a pixel from left to right?
 let pixelHalfWidth = pixelWidth / 2; // todo -> half of the pixel width
 
@@ -67,8 +67,8 @@ let eyeCoordinate = new Vector3(0, 0, eyeDistance); // todo -> set this after ey
 // They also provide a "raycast" function that you can pass a ray to
 // in order to find intersection between the ray and the object
 
-let sphere; // todo = new Sphere(new Vector3(0, 0, 0), 0.25);
-let plane; // todo = new Plane(new Vector3(0, 1, 0), new Vector3(0, -0.25, 0));
+let sphere = new Sphere(new Vector3(0, 0, 0), 0.25);// todo = new Sphere(...);
+let plane = new Plane(new Vector3(0, 1, 0), new Vector3(0, -0.25, 0)); // todo = new Plane(...);
 
 // end of raytracer setup ******************************************************
 
@@ -79,10 +79,10 @@ function generateRayForPixel(xPixelIndex, yPixelIndex) {
 	const pixelY = 1 - pixelHalfWidth - pixelWidth * yPixelIndex;
 	const pixelCoordinate = new Vector3(pixelX, pixelY, 0);
 
-	let direction; // = vector from the eye to the pixel
+	let direction = pixelCoordinate.clone().subtract(eyeCoordinate); // = vector from the eye to the pixel
 
 	// Creates a ray from the eye toward the pixelCoordinate
-	let pixelRay; // = new Ray(...);
+	let pixelRay = new Ray(eyeCoordinate, direction);; // = new Ray(...);
 	return pixelRay;
 }
 
@@ -104,12 +104,12 @@ function updateAndRender(timeElapsed) {
 		for (let xPixelIndex = 0; xPixelIndex < pixelsAcross; ++xPixelIndex) {
 
 			// Uncomment this once you've coded generateRayForPixel
-			// const pixelRay = generateRayForPixel(xPixelIndex, yPixelIndex);
+			const pixelRay = generateRayForPixel(xPixelIndex, yPixelIndex);
 
 			// See if the ray intersects the sphere or the plane (or every object in our scene)
 			// Uncomment when your sphere or plane code is ready
-			// const sphereResult = sphere.raycast(pixelRay);
-			// const planeResult = plane.raycast(pixelRay);
+			const sphereResult = sphere.raycast(pixelRay);
+			const planeResult = plane.raycast(pixelRay);
 
 			// determine which hit object is the closest (in case there is more than 1 hit)
 
