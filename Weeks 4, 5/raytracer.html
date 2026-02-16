@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<!-- saved from url=(0091)file:///C:/Users/Flore/Downloads/CSUMB/CST325/CST325_Homework/Weeks%204,%205/raytracer.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<title>Raytracer</title>
+</head>
+<body>
+<canvas id="my-canvas" width="256" height="256" style="width: 768px; height: 768px;"></canvas>
+
+<script src="./raytracer_files/vector3.js"></script>
+<script src="./raytracer_files/ray.js"></script>
+<script src="./raytracer_files/sphere.js"></script>
+<script src="./raytracer_files/plane.js"></script>
+<script>
+
+// Canvas setup, don't need to do anything in this section ************************
+// Get a reference to the javascript object associated with the canvas
+const canvas = document.getElementById('my-canvas');
+
+// The canvas dimension we will set
+const pixelsAcross = 256;  // pixels across
+const pixelsDown = 256; // pixels down
+
+// How much we scale a single pixel.  This has no effect on our computations. Change it to your liking.
+const pixelScale = 3;
+
+// Set up the size of our canvas in pixels
+canvas.width = pixelsAcross;
+canvas.height = pixelsDown;
+canvas.style.cssText = 'width:' + (pixelsAcross * pixelScale) + 'px;height:' + (pixelsDown * pixelScale) + 'px';
+
+// Get the context from the canvas (in this case we just want 2d)
+const canvasContext = canvas.getContext('2d');
+
+// Get an array representing all of the pixels
+// Arranged left to right, top to bottom
+const imageData = canvasContext.getImageData(0, 0, pixelsAcross, pixelsDown);
+// end canvas setup section *****************************************************
+
+
+// Raytracer scene data setup ***************************************************
+
+// if this changes, your code should still work
+const fov = 45; 
+let fovRadians = (fov * Math.PI) / 180 // todo -> convert degrees to radians
+let pixelWidth = 2 / pixelsAcross; // todo -> what's the size of a pixel from left to right?
+let pixelHalfWidth = pixelWidth / 2; // todo -> half of the pixel width
+
+// How far away (scalar) the eye is from the image plane (see project guide for more info)
+let eyeDistance = 1 / Math.tan(fovRadians / 2); 
+// -----------
+// |         /
+// |        /
+// |       /
+// | 45/2 /      <---- half angle
+// |     /
+// |    /
+// |   /
+// |  /
+// | /
+
+let eyeCoordinate = new Vector3(0, 0, eyeDistance); // todo -> set this after eyeDistance is calculated
+
+// Define the scene objects here ------------------
+
+// These are 3d definitions that match all of the math we did in class
+// They also provide a "raycast" function that you can pass a ray to
+// in order to find intersection between the ray and the object
+
+let sphere; // todo = new Sphere(new Vector3(0, 0, 0), 0.25);
+let plane; // todo = new Plane(new Vector3(0, 1, 0), new Vector3(0, -0.25, 0));
+
+// end of raytracer setup ******************************************************
+
+
+// -----------------------------------------------------------------------------
+function generateRayForPixel(xPixelIndex, yPixelIndex) {
+	const pixelX = -1 + pixelHalfWidth + pixelWidth * xPixelIndex;
+	const pixelY = 1 - pixelHalfWidth - pixelWidth * yPixelIndex;
+	const pixelCoordinate = new Vector3(pixelX, pixelY, 0);
+
+	let direction; // = vector from the eye to the pixel
+
+	// Creates a ray from the eye toward the pixelCoordinate
+	let pixelRay; // = new Ray(...);
+	return pixelRay;
+}
+
+// -----------------------------------------------------------------------------
+function setPixelColor(xPixelIndex, yPixelIndex, shadeOfGray /*[0,1]*/) {
+	const index = (yPixelIndex * pixelsAcross + xPixelIndex) * 4; // 4 bytes per pixel
+	imageData.data[index + 0] = shadeOfGray * 255; // red channel
+	imageData.data[index + 1] = shadeOfGray * 255; // green channel
+	imageData.data[index + 2] = shadeOfGray * 255; // blue channel
+	imageData.data[index + 3] = 255;
+}
+
+// -----------------------------------------------------------------------------
+function updateAndRender(timeElapsed) {
+  // Go through every pixel
+  // NOTE! You should only call setPixelColor once per pixel.  Otherwise, the
+  // last time you call it will be the color and overwrite previous calls.
+	for (let yPixelIndex = 0; yPixelIndex < pixelsDown; ++yPixelIndex) {
+		for (let xPixelIndex = 0; xPixelIndex < pixelsAcross; ++xPixelIndex) {
+
+			// Uncomment this once you've coded generateRayForPixel
+			// const pixelRay = generateRayForPixel(xPixelIndex, yPixelIndex);
+
+			// See if the ray intersects the sphere or the plane (or every object in our scene)
+			// Uncomment when your sphere or plane code is ready
+			// const sphereResult = sphere.raycast(pixelRay);
+			// const planeResult = plane.raycast(pixelRay);
+
+			// determine which hit object is the closest (in case there is more than 1 hit)
+
+			// if we hit something {
+				setPixelColor(xPixelIndex, yPixelIndex, 0.5); // middle gray
+			// } else {
+				// we didn't hit anything, choose an appropriate background color
+				// setPixelColor(xPixelIndex, yPixelIndex, 0.1); // dark gray
+			//}
+		}
+	}
+
+	// Take our array of color data and give to the canvas to display
+	canvasContext.putImageData(imageData, 0, 0);
+
+	// Let the browser know it should call this function again when it's time to render
+	requestAnimationFrame(updateAndRender);
+}
+
+// We are ready to render, let the browser know
+requestAnimationFrame(updateAndRender);
+
+</script>
+<script src="./raytracer_files/raytracer-tests.js"></script>
+
+
+</body></html>
