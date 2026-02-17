@@ -114,15 +114,39 @@ function updateAndRender(timeElapsed) {
 			// determine which hit object is the closest (in case there is more than 1 hit)
 			if(sphereResult.hit == true && planeResult.hit == true){
 				if(sphereResult.eyeDistance < planeResult.eyeDistance){
-					setPixelColor(xPixelIndex, yPixelIndex, 0.8);
+					var lightPos = new Vector3(1, 0, 0);
+					var lightDir = lightPos.clone().subtract(sphereResult.point).normalize();
+					var normalDotLight = sphereResult.normal.dot(lightDir);
+					if(normalDotLight < 0){
+						normalDotLight = 0;
+					}
+					setPixelColor(xPixelIndex, yPixelIndex, normalDotLight);
 				}else if(planeResult.eyeDistance < sphereResult){
-					setPixelColor(xPixelIndex, yPixelIndex, 0.5);
+					var lightPos = new Vector3(1, 0, 0);
+					var lightDir = lightPos.clone().subtract(planeResult.point).normalize();
+					var normalDotLight = planeResult.normal.dot(lightDir);
+					if(normalDotLight < 0){
+						normalDotLight = 0;
+					}
+					setPixelColor(xPixelIndex, yPixelIndex, normalDotLight);
 				}
 			}
 			if (sphereResult.hit == true) {
-				setPixelColor(xPixelIndex, yPixelIndex, 0.8); // middle gray
+				var lightPos = new Vector3(1, 0, 0);
+					var lightDir = lightPos.clone().subtract(sphereResult.point).normalize();
+					var normalDotLight = sphereResult.normal.dot(lightDir);
+					if(normalDotLight < 0){
+						normalDotLight = 0;
+					}
+					setPixelColor(xPixelIndex, yPixelIndex, normalDotLight);
 			} else if (planeResult.hit) {
-				setPixelColor(xPixelIndex, yPixelIndex, 0.5); // dark gray
+				var lightPos = new Vector3(1, 0, 0);
+					var lightDir = lightPos.clone().subtract(planeResult.point).normalize();
+					var normalDotLight = planeResult.normal.dot(lightDir);
+					if(normalDotLight < 0){
+						normalDotLight = 0;
+					}
+					setPixelColor(xPixelIndex, yPixelIndex, normalDotLight);
 			}else{
 				// we didn't hit anything, choose an appropriate background color
 				setPixelColor(xPixelIndex, yPixelIndex, 0.1);
