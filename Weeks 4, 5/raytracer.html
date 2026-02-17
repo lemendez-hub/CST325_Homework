@@ -111,9 +111,14 @@ function updateAndRender(timeElapsed) {
 			const sphereResult = sphere.raycast(pixelRay);
 			const planeResult = plane.raycast(pixelRay);
 
-			
 			// determine which hit object is the closest (in case there is more than 1 hit)
-
+			if(sphereResult.hit == true && planeResult.hit == true){
+				if(sphereResult.eyeDistance < planeResult.eyeDistance){
+					setPixelColor(xPixelIndex, yPixelIndex, 0.8);
+				}else if(planeResult.eyeDistance < sphereResult){
+					setPixelColor(xPixelIndex, yPixelIndex, 0.5);
+				}
+			}
 			if (sphereResult.hit == true) {
 				setPixelColor(xPixelIndex, yPixelIndex, 0.8); // middle gray
 			} else if (planeResult.hit) {
@@ -122,7 +127,6 @@ function updateAndRender(timeElapsed) {
 				// we didn't hit anything, choose an appropriate background color
 				setPixelColor(xPixelIndex, yPixelIndex, 0.1);
 			}
-			
 		}
 	}
 
