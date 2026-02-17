@@ -116,10 +116,13 @@ function updateAndRender(timeElapsed) {
 
 			if (sphereResult.hit == true) {
 				setPixelColor(xPixelIndex, yPixelIndex, 0.8); // middle gray
-			} else {
+			} else if (planeResult.hit) {
+				setPixelColor(xPixelIndex, yPixelIndex, 0.5); // dark gray
+			}else{
 				// we didn't hit anything, choose an appropriate background color
-				setPixelColor(xPixelIndex, yPixelIndex, 0.1); // dark gray
+				setPixelColor(xPixelIndex, yPixelIndex, 0.1);
 			}
+			
 		}
 	}
 
