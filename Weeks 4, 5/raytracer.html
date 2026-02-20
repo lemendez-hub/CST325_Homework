@@ -97,6 +97,10 @@ function setPixelColor(xPixelIndex, yPixelIndex, shadeOfGray /*[0,1]*/) {
 
 // -----------------------------------------------------------------------------
 function updateAndRender(timeElapsed) {
+	var lightPos = new Vector3(1, 0, 0);
+	var seconds = timeElapsed * 0.001; // Convert milliseconds to seconds
+	lightPos.x = Math.cos(seconds) * 0.5; // Radius of 0.5
+	lightPos.z = Math.sin(seconds) * 0.5; // Radius of 0.5
   // Go through every pixel
   // NOTE! You should only call setPixelColor once per pixel.  Otherwise, the
   // last time you call it will be the color and overwrite previous calls.
@@ -114,7 +118,7 @@ function updateAndRender(timeElapsed) {
 			// determine which hit object is the closest (in case there is more than 1 hit)
 			if(sphereResult.hit == true && planeResult.hit == true){
 				if(sphereResult.eyeDistance < planeResult.eyeDistance){
-					var lightPos = new Vector3(1, 0, 0);
+					// var lightPos = new Vector3(1, 0, 0);
 					var lightDir = lightPos.clone().subtract(sphereResult.point).normalize();
 					var normalDotLight = sphereResult.normal.dot(lightDir);
 					if(normalDotLight < 0){
@@ -122,7 +126,7 @@ function updateAndRender(timeElapsed) {
 					}
 					setPixelColor(xPixelIndex, yPixelIndex, normalDotLight);
 				}else if(planeResult.eyeDistance < sphereResult){
-					var lightPos = new Vector3(1, 0, 0);
+					// var lightPos = new Vector3(1, 0, 0);
 					var lightDir = lightPos.clone().subtract(planeResult.point).normalize();
 					var normalDotLight = planeResult.normal.dot(lightDir);
 					if(normalDotLight < 0){
@@ -132,7 +136,7 @@ function updateAndRender(timeElapsed) {
 				}
 			}
 			if (sphereResult.hit == true) {
-				var lightPos = new Vector3(1, 0, 0);
+				// var lightPos = new Vector3(1, 0, 0);
 					var lightDir = lightPos.clone().subtract(sphereResult.point).normalize();
 					var normalDotLight = sphereResult.normal.dot(lightDir);
 					if(normalDotLight < 0){
@@ -140,7 +144,7 @@ function updateAndRender(timeElapsed) {
 					}
 					setPixelColor(xPixelIndex, yPixelIndex, normalDotLight);
 			} else if (planeResult.hit) {
-				var lightPos = new Vector3(1, 0, 0);
+				// var lightPos = new Vector3(1, 0, 0);
 					var lightDir = lightPos.clone().subtract(planeResult.point).normalize();
 					var normalDotLight = planeResult.normal.dot(lightDir);
 					if(normalDotLight < 0){
