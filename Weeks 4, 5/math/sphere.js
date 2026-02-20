@@ -1,5 +1,5 @@
 class Sphere{
-    constructor(center, radius) {
+    constructor(center, radius, color) {
         // Clone the center vector to avoid external mutations
        
         
@@ -19,6 +19,15 @@ class Sphere{
         }else{
             this.radius = radius
         }
+
+        if(color === undefined){
+            color = new Vector3(1, 1, 1);
+        }
+        if(!(color instanceof Vector3)) {
+            console.warn("Invalid color provided. Setting to default");
+            color = new Vector3(1, 1, 1);
+        }
+        this.color = color;
     }
     
     /**

@@ -61,14 +61,17 @@ let eyeCoordinate = new Vector3(0, 0, eyeDistance); // todo -> set this after ey
 // These are 3d definitions that match all of the math we did in class
 // They also provide a "raycast" function that you can pass a ray to in order to find intersection between the ray and the object
 
-let sphere = new Sphere(new Vector3(0, 0, 0), 0.25);// todo = new Sphere(...);
+let sphere = new Sphere(new Vector3(0, 0, 0), 0.25, new Vector3(1, 1, 1));// todo = new Sphere(...);
 // let plane = new Plane(new Vector3(0, 1, 0), new Vector3(0, -0.25, 0)); // todo = new Plane(...);
 
-let floor = new Plane(new Vector3(0, 1, 0), new Vector3(0, -0.25, 0));
-let ceiling = new Plane(new Vector3(0, -1, 0), new Vector3(0, 1.0, 0));
-let leftWall = new Plane(new Vector3(1, 1, 0), new Vector3(-1.0, 0, 0));
-let rightWall = new Plane(new Vector3(-1, 0, 0), new Vector3(1.0, 0, 0));
-let backWall = new Plane(new Vector3(0, 0, 1), new Vector3(0, 0, -1.0));
+let floor = new Plane(new Vector3(0, 1, 0), new Vector3(0, -0.25, 0), new Vector3(1, 1, 1));
+let ceiling = new Plane(new Vector3(0, -1, 0), new Vector3(0, 1, 0), new Vector3(1, 1, 1));
+let leftWall = new Plane(new Vector3(1, 0, 0), new Vector3(-1, 0, 0));
+let rightWall = new Plane(new Vector3(-1, 0, 0), new Vector3(1, 0, 0), new Vector3(0, 1, 0));
+let backWall = new Plane(new Vector3(0, 0, 1), new Vector3(0, 0, -1), new Vector3(1, 1, 1));
+
+var red = leftWall.color = new Vector3(1, 0, 0);
+var green = rightWall.color = new Vector3(0, 1, 0);
 
 let scene = [sphere, ceiling, floor, leftWall, rightWall, backWall];
 
@@ -86,11 +89,16 @@ function generateRayForPixel(xPixelIndex, yPixelIndex){
 	return pixelRay;
 }
 // -----------------------------------------------------------------------------
-function setPixelColor(xPixelIndex, yPixelIndex, shadeOfGray /*[0,1]*/){
+function setPixelColor(xPixelIndex, yPixelIndex, color /*[0,1]*/){
 	const index = (yPixelIndex * pixelsAcross + xPixelIndex) * 4; // 4 bytes per pixel
-	imageData.data[index + 0] = shadeOfGray * 255; // Red channel
-	imageData.data[index + 1] = shadeOfGray * 255; // Green channel
-	imageData.data[index + 2] = shadeOfGray * 255; // Blue channel
+
+	const r = Math.max(0, Math.min(1, color.x));
+	const g = Math.max(0, Math.min(1, color.y));
+	const b = Math.max(0, Math.min(1, color.z));
+
+	imageData.data[index + 0] = r * 255; // Red channel
+	imageData.data[index + 1] = g * 255; // Green channel
+	imageData.data[index + 2] = b * 255; // Blue channel
 	imageData.data[index + 3] = 255;
 }
 // -----------------------------------------------------------------------------
@@ -120,56 +128,27 @@ function updateAndRender(timeElapsed){
 			for(let i = 0; i < scene.length; i++){
 				const r = scene[i].raycast(pixelRay);
 				if(r.hit){
-					if(!closestHit || r.eyeDistance < closestHit.eyeDistance){
+					if(!closestHit || r.distance < closestHit.distance){
 						closestHit = r;
 						closestObj = scene[i];
 					}
 				}
 			}
 			if(!closestHit){
-				setPixelColor(xPixelIndex, yPixelIndex, 0.1);
+				setPixelColor(xPixelIndex, yPixelIndex, new Vector3(0.1, 0.1, 0.1));
 			}else{
 				let lightDir = lightPos.clone().subtract(closestHit.point).normalize();
-				let shade = closestHit.normal.dot(lightDir);
+				let shade = Math.max(0, closestHit.normal.dot(lightDir));
 				if(shade < 0){
 					shade = 0;
 				}
 				if(isInShadow(closestHit.point, lightPos, closestObj, scene)){
 					shade = 0.0;
 				}
-				setPixelColor(xPixelIndex, yPixelIndex, shade);
+				const objClr = (closestObj.color instanceof Vector3) ? closestObj.color : new Vector3(1, 1, 1);
+				const finalClr = objClr.clone().multiplyScalar(shade);
+				setPixelColor(xPixelIndex, yPixelIndex, finalClr);
 			}
-			// var hit = null;
-			// var hitObject = null;
-			
-			// if(sphereResult.hit && planeResult.hit){
-			// 	if(sphereResult.distance < planeResult.distance){
-			// 		hit = sphereResult;
-			// 		hitObject = "sphere";
-			// 	}else{
-			// 		hit = planeResult;
-			// 		hitObject = "plane";
-			// 	}
-			// }else if(sphereResult.hit){
-			// 	hit = sphereResult;
-			// 	hitObject = "sphere";
-			// }else if(planeResult.hit){
-			// 	hit = planeResult;
-			// 	hitObject = "plane";
-			// }
-			// if(!hit){
-			// 	setPixelColor(xPixelIndex, yPixelIndex, 0.1);
-			// }else{
-			// 	var lightDir = lightPos.clone().subtract(hit.point).normalize();
-			// 	var shade = hit.normal.dot(lightDir);
-			// 	if(shade < 0){
-			// 		shade = 0;
-			// 	}
-			// 	if(isInShadow(hit.point, lightPos, hitObject)){
-			// 		shade = 0.0;
-			// 	}
-			// 	setPixelColor(xPixelIndex, yPixelIndex, shade);
-			// }
 		}
 	}
 	// Take our array of color data and give to the canvas to display
@@ -193,18 +172,11 @@ function isInShadow(hitPoint, lightPos, hitObject, scene){
 			continue;
 		}
 		const r = obj.raycast(shadowRay);
-		if(r.hit && r.eyeDistance < distToLight){
+		if(r.hit && r.distance < distToLight){
 			return true;
 		}
 	}
 	return false;
-	// if(hitObject === "sphere"){
-	// 	var planeR = plane.raycast(shadowRay);
-	// 	return planeR.hit && planeR.distance < distToLight;
-	// }else{
-	// 	var sphereR = sphere.raycast(shadowRay);
-	// 	return sphereR.hit && sphereR.distance < distToLight;
-	// }
 }
 // -----------------------------------------------------------------------------
 // We are ready to render, let the browser know
