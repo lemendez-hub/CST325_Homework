@@ -62,7 +62,16 @@ let eyeCoordinate = new Vector3(0, 0, eyeDistance); // todo -> set this after ey
 // They also provide a "raycast" function that you can pass a ray to in order to find intersection between the ray and the object
 
 let sphere = new Sphere(new Vector3(0, 0, 0), 0.25);// todo = new Sphere(...);
-let plane = new Plane(new Vector3(0, 1, 0), new Vector3(0, -0.25, 0)); // todo = new Plane(...);
+// let plane = new Plane(new Vector3(0, 1, 0), new Vector3(0, -0.25, 0)); // todo = new Plane(...);
+
+let floor = new Plane(new Vector3(0, 1, 0), new Vector3(0, -0.25, 0));
+let ceiling = new Plane(new Vector3(0, -1, 0), new Vector3(0, 1.0, 0));
+let leftWall = new Plane(new Vector3(1, 1, 0), new Vector3(-1.0, 0, 0));
+let rightWall = new Plane(new Vector3(-1, 0, 0), new Vector3(1.0, 0, 0));
+let backWall = new Plane(new Vector3(0, 0, 1), new Vector3(0, 0, -1.0));
+
+let scene = [sphere, ceiling, floor, leftWall, rightWall, backWall];
+
 // End of raytracer setup ******************************************************
 // -----------------------------------------------------------------------------
 function generateRayForPixel(xPixelIndex, yPixelIndex){
@@ -100,41 +109,67 @@ function updateAndRender(timeElapsed){
 			
 			// See if the ray intersects the sphere or the plane (or every object in our scene)
 			// Uncomment when your sphere or plane code is ready
-			const sphereResult = sphere.raycast(pixelRay);
-			const planeResult = plane.raycast(pixelRay);
+			
+			// const sphereResult = sphere.raycast(pixelRay);
+			// const planeResult = plane.raycast(pixelRay);
 			
 			// Determine which hit object is the closest (in case there is more than 1 hit)
-			var hit = null;
-			var hitObject = null;
-			
-			if(sphereResult.hit && planeResult.hit){
-				if(sphereResult.distance < planeResult.distance){
-					hit = sphereResult;
-					hitObject = "sphere";
-				}else{
-					hit = planeResult;
-					hitObject = "plane";
+			let closestHit = null;
+			let closestObj = null;
+
+			for(let i = 0; i < scene.length; i++){
+				const r = scene[i].raycast(pixelRay);
+				if(r.hit){
+					if(!closestHit || r.eyeDistance < closestHit.eyeDistance){
+						closestHit = r;
+						closestObj = scene[i];
+					}
 				}
-			}else if(sphereResult.hit){
-				hit = sphereResult;
-				hitObject = "sphere";
-			}else if(planeResult.hit){
-				hit = planeResult;
-				hitObject = "plane";
 			}
-			if(!hit){
+			if(!closestHit){
 				setPixelColor(xPixelIndex, yPixelIndex, 0.1);
 			}else{
-				var lightDir = lightPos.clone().subtract(hit.point).normalize();
-				var shade = hit.normal.dot(lightDir);
+				let lightDir = lightPos.clone().subtract(closestHit.point).normalize();
+				let shade = closestHit.normal.dot(lightDir);
 				if(shade < 0){
 					shade = 0;
 				}
-				if(isInShadow(hit.point, lightPos, hitObject)){
+				if(isInShadow(closestHit.point, lightPos, closestObj, scene)){
 					shade = 0.0;
 				}
 				setPixelColor(xPixelIndex, yPixelIndex, shade);
 			}
+			// var hit = null;
+			// var hitObject = null;
+			
+			// if(sphereResult.hit && planeResult.hit){
+			// 	if(sphereResult.distance < planeResult.distance){
+			// 		hit = sphereResult;
+			// 		hitObject = "sphere";
+			// 	}else{
+			// 		hit = planeResult;
+			// 		hitObject = "plane";
+			// 	}
+			// }else if(sphereResult.hit){
+			// 	hit = sphereResult;
+			// 	hitObject = "sphere";
+			// }else if(planeResult.hit){
+			// 	hit = planeResult;
+			// 	hitObject = "plane";
+			// }
+			// if(!hit){
+			// 	setPixelColor(xPixelIndex, yPixelIndex, 0.1);
+			// }else{
+			// 	var lightDir = lightPos.clone().subtract(hit.point).normalize();
+			// 	var shade = hit.normal.dot(lightDir);
+			// 	if(shade < 0){
+			// 		shade = 0;
+			// 	}
+			// 	if(isInShadow(hit.point, lightPos, hitObject)){
+			// 		shade = 0.0;
+			// 	}
+			// 	setPixelColor(xPixelIndex, yPixelIndex, shade);
+			// }
 		}
 	}
 	// Take our array of color data and give to the canvas to display
@@ -144,7 +179,7 @@ function updateAndRender(timeElapsed){
 	requestAnimationFrame(updateAndRender);
 }
 // -----------------------------------------------------------------------------
-function isInShadow(hitPoint, lightPos, hitObject){
+function isInShadow(hitPoint, lightPos, hitObject, scene){
 	var toLight = lightPos.clone().subtract(hitPoint);
 	var distToLight = toLight.length();
 	var lightDir = toLight.clone().normalize();
@@ -152,13 +187,24 @@ function isInShadow(hitPoint, lightPos, hitObject){
 	var shadowOrigin = hitPoint.clone().add(lightDir.clone().multiplyScalar(0.005));
 	var shadowRay = new Ray(shadowOrigin, lightDir);
 	
-	if(hitObject === "sphere"){
-		var planeR = plane.raycast(shadowRay);
-		return planeR.hit && planeR.distance < distToLight;
-	}else{
-		var sphereR = sphere.raycast(shadowRay);
-		return sphereR.hit && sphereR.distance < distToLight;
+	for(let i = 0; i < scene.length; i++){
+		const obj = scene[i];
+		if(obj === hitObject){
+			continue;
+		}
+		const r = obj.raycast(shadowRay);
+		if(r.hit && r.eyeDistance < distToLight){
+			return true;
+		}
 	}
+	return false;
+	// if(hitObject === "sphere"){
+	// 	var planeR = plane.raycast(shadowRay);
+	// 	return planeR.hit && planeR.distance < distToLight;
+	// }else{
+	// 	var sphereR = sphere.raycast(shadowRay);
+	// 	return sphereR.hit && sphereR.distance < distToLight;
+	// }
 }
 // -----------------------------------------------------------------------------
 // We are ready to render, let the browser know
