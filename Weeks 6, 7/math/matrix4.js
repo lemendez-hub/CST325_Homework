@@ -95,6 +95,15 @@ class Matrix4 {
     }
 
     // todo - multiply 'this' * rightSideMatrix
+    var a = this.elements;
+    var b = rightSideMatrix.elements;
+    var temp = new Float32Array(16);
+    for(var row = 0; row < 4; row++){
+      for(var col = 0; col < 4; col++){
+        temp[row * 4 + col] = a[row * 4 + 0] * b[0 * 4 + col] + a[row * 4 + 1] * b[1 * 4 + col] + a[row * 4 + 2] * b[2 * 4 + col] + a[row * 4 + 3] * b[3 * 4 + col];
+      }
+    }
+    this.elements = temp;
     return this;
   }
 
@@ -107,44 +116,52 @@ class Matrix4 {
   // -------------------------------------------------------------------------
   makeScale(x, y, z) {
     // todo make this matrix into a pure scale matrix based on (x, y, z)
+    this.set(x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1);
     return this;
   }
 
   // -------------------------------------------------------------------------
   makeRotationX(degrees) {
     // todo - convert to radians
-    // var radians = ...
+    var radians = degrees * Math.PI / 180;
+    var cos = Math.cos(radians);
+    var sin = Math.sin(radians);
 
     // shortcut - use in place of this.elements
     const e = this.elements;
 
     // todo - set every element of this matrix to be a rotation around the x-axis
-
+    this.set(1, 0, 0, 0, 0, cos, -sin, 0, 0, sin, cos, 0, 0, 0, 0, 1);
     return this;
   }
 
   // -------------------------------------------------------------------------
   makeRotationY(degrees) {
     // todo - convert to radians
-    // var radians = ...
+    var radians = degrees * Math.PI / 180;
+    var cos = Math.cos(radians);
+    var sin = Math.sin(radians);
 
     // shortcut - use in place of this.elements
     const e = this.elements;
 
     // todo - set every element of this matrix to be a rotation around the y-axis
-
+    this.set(cos, 0, sin, 0, 0, 1, 0, 0, -sin, 0, cos, 0, 0, 0, 0, 1);
     return this;
   }
 
   // -------------------------------------------------------------------------
   makeRotationZ(degrees) {
     // todo - convert to radians
-    // var radians = ...
+    var radians = degrees * Math.PI / 180;
 
     // shortcut - use in place of this.elements
     const e = this.elements;
+    var cos = Math.cos(radians);
+    var sin = Math.sin(radians);
 
     // todo - set every element of this matrix to be a rotation around the z-axis
+    this.set(cos, -sin, 0, 0, sin, cos, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
     return this;
   }
 
