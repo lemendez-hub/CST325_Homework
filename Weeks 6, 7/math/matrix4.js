@@ -171,11 +171,11 @@ class Matrix4 {
     //      - If arg1 is a Vector3 or Vector4, use its components and ignore
     //        arg2 and arg3. O.W., treat arg1 as x, arg2 as y, and arg3 as z
     if (arg1 instanceof Vector4) {
-      //...
+      this.set(1, 0, 0, arg1.x, 0, 1, 0, arg1.y, 0, 0, 1, arg1.z, 0, 0, 0, 1);
     } else if (arg1 instanceof Vector3) {
-      //...
+      this.set(1, 0, 0, arg1.x, 0, 1, 0, arg1.y, 0, 0, 1, arg1.z, 0, 0, 0, 1);
     } else {
-      //...
+      this.set(1, 0, 0, arg1, 0, 1, 0, arg2, 0, 0, 1, arg3, 0, 0, 0, 1);
     }
     return this;
   }
@@ -183,15 +183,17 @@ class Matrix4 {
   // -------------------------------------------------------------------------
   makePerspective(fovy, aspect, near, far) {
     // todo - convert fovy to radians
-    // var fovyRads = ...
+    var fovyRads = fovy * Math.PI / 180;
 
     // todo -compute t (top) and r (right)
+    var t = near * Math.tan(fovyRads / 2);
+    var r = t * aspect;
 
     // shortcut - use in place of this.elements
     const e = this.elements;
 
     // todo - set every element to the appropriate value
-
+    this.set(near / r, 0, 0, 0, 0, near / t, 0, 0, 0, 0, -(far + near) / (far - near), -(2 * far * near) / (far - near), 0, 0, -1, 0);
     return this;
   }
 
@@ -201,7 +203,14 @@ class Matrix4 {
     const e = this.elements;
 
     // todo - set every element to the appropriate value
+    var scaleX = 2 / (right - left);
+    var scaleY = 2 / (top - bottom);
+    var scaleZ = -2 / (far - near);
 
+    var transX = -(right + left) / (right - left);
+    var transY = -(top + bottom) / (top - bottom);
+    var transZ = -(far + near) / (far - near);
+    this.set(scaleX, 0, 0, transX, 0, scaleY, 0, transY, 0, 0, scaleZ, transZ, 0, 0, 0, 1);
     return this;
   }
 
