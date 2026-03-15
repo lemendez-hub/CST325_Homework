@@ -113,12 +113,12 @@ function updateAndRender() {
     checkGLError(gl, "After gl.clear");
     
     // Todo #3 - specify what portion of the canvas we want to draw to (all of it)
-    // gl.viewport(0, 0, /* width of viewport equal to canvas width*/, /*height of viewport equal to canvas height*/);
+    gl.viewport(0, 0, 1024, 768);
     checkGLError(gl, "After gl.viewport");
 
     // Todo #3 specify the projection parameters
-    // let aspectRatio = ?; 
-    // projectionMatrix.makePerspective(?, ?, ?, ?);
+    let aspectRatio = 1024 * 768;
+    projectionMatrix.makePerspective(45, aspectRatio, 0.1, 1000);
 
     // lineGrid.render(camera, projectionMatrix, colorProgram);
     // checkGLError(gl, "After rendering the line grid");

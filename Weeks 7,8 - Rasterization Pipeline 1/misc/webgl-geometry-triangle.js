@@ -54,9 +54,9 @@ class WebGLGeometryTriangle {
         this.bufferItemCount = positions.length / 3;
 
         // Todo #6 - Position Buffer Setup
-        // 1) this.positionBuffer = /* Create the buffer */;
-        // 2) Bind it to the ARRAY_BUFFER binding point
-        // 3) Upload the positions data into the buffer as 32-bit floats
+        this.positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
         checkGLError(gl, "bufferData(position)");
 
         // Define RGB colors for each vertex:

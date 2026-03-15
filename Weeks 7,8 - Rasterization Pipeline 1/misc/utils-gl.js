@@ -40,10 +40,10 @@ function createCompiledAndLinkedShaderProgram(gl, vertexShaderText, fragmentShad
     
     // Create a new shader program object, set the shaders that belong it, and link them
     // Todo #5
-    // 1) const shaderProgram = /*create the program object*/; 
-    // 2) Attach the compiled vertex shader
-    // 3) Attach the compiled fragment shader
-    // 4) Link the shaders in the program
+    const shaderProgram = gl.createProgram();
+    gl.attachShader(shaderProgram, vertexShader);
+    gl.attachShader(shaderProgram, fragmentShader);
+    gl.linkProgram(shaderProgram);
     
     // Ensure that linking was successful
     try {
@@ -63,9 +63,9 @@ function createCompiledAndLinkedShaderProgram(gl, vertexShaderText, fragmentShad
 // -------------------------------------------------------------------------
 function createCompiledShader(gl, shaderText, shaderType) {
     // Todo #4
-    // 1) const shader = /*create the shader object*/; 
-    // 2) Attach the Shader Source Code
-    // 3) Compile the shader
+    const shader = gl.createShader(shaderType);
+    gl.shaderSource(shader, shaderText);
+    gl.compileShader(shader);
 
     try {
         if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
