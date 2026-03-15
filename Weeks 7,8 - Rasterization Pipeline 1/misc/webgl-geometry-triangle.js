@@ -103,7 +103,7 @@ class WebGLGeometryTriangle {
         // - type of each component (FLOAT)
         // - normalization disabled
         // - stride & offset both 0 (tightly packed)
-        // gl.vertexAttribPointer(?, ?, ?, ?, ?, ?);
+        gl.vertexAttribPointer(attributes.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 
         // Enable this attribute for use during drawing
         if (attributes.vertexPositionAttribute >= 0)
@@ -122,10 +122,14 @@ class WebGLGeometryTriangle {
         gl.uniformMatrix4fv(uniforms.worldMatrixUniform, false, this.worldMatrix.clone().transpose().elements);
         // Todo #8 - Upload the remaining transformation matrices
 
+        gl.uniformMatrix4fv(uniforms.viewMatrixUniform, false, camera.cameraWorldMatrix.clone().inverse().transpose().elements);
+        gl.uniformMatrix4fv(uniforms.projectionMatrixUniform, false, projectionMatrix.clone().transpose().elements);
+
         // Finally, draw the triangle:
         // - mode: TRIANGLES (draws one triangle per set of 3 vertices)
         // - first index: 0
         // - count: number of vertices
+
         gl.drawArrays(gl.TRIANGLES, 0, this.bufferItemCount);
 
         // Clean up state by disabling vertex attributes

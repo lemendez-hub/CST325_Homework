@@ -123,6 +123,6 @@ function updateAndRender() {
     // lineGrid.render(camera, projectionMatrix, colorProgram);
     // checkGLError(gl, "After rendering the line grid");
 
-    // triangleGeometry.render(camera, projectionMatrix, colorProgram);
-    // checkGLError(gl, "After rendering the triangle");
+    triangleGeometry.render(camera, projectionMatrix, colorProgram);
+    checkGLError(gl, "After rendering the triangle");
 }
