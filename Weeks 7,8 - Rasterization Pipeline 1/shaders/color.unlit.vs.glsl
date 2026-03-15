@@ -2,6 +2,7 @@ precision mediump float;
 
 attribute vec3 aVertexPosition;
 // Todo #10 - declare "aVertexColor" attribute
+attribute vec3 aVertexColor;
 
 uniform mat4 uWorldMatrix;
 uniform mat4 uViewMatrix;
@@ -12,7 +13,12 @@ uniform mat4 uProjectionMatrix;
 // Each vertex outputs its own varying value; the GPU then interpolates these values across the surface
 // of the primitive (e.g., a triangle) based on each fragment's proximity to surrounding vertices.
 
+varying vec3 vVertexColor;
+
 void main(void) {
+    
+    vVertexColor = aVertexColor;
+
     gl_Position = uProjectionMatrix * uViewMatrix * uWorldMatrix * vec4(aVertexPosition, 1.0);
 
     // Todo #10 - assign aVertexColor to vVertexColor

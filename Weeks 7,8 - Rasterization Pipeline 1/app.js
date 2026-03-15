@@ -58,8 +58,9 @@ function createShaders() {
 
     // Get and store references to vertex data attributes (i.e. named identifiers) in the shader
     colorProgram.attributes = {
-        vertexPositionAttribute: gl.getAttribLocation(colorProgram, "aVertexPosition")
+        vertexPositionAttribute: gl.getAttribLocation(colorProgram, "aVertexPosition"),
         /* Todo #11 vertexColorsAttribute: ? */
+        vertexColorsAttribute: gl.getAttribLocation(colorProgram, "aVertexColor")
     };
 
     // Verify we found the attribute. 
@@ -106,6 +107,7 @@ function updateAndRender() {
     camera.update(time.deltaTime);
     
     // Todo - update the triangle's rotation by setting its worldMatrix
+    triangleGeometry.worldMatrix.makeRotationY(time.secondsElapsedSinceStart * 45);
     
     // Todo #2 - Clear the canvas for the new frame
     gl.clearColor(0.707, 0.707, 1.0, 1.0);
@@ -117,7 +119,7 @@ function updateAndRender() {
     checkGLError(gl, "After gl.viewport");
 
     // Todo #3 specify the projection parameters
-    let aspectRatio = 1024 * 768;
+    let aspectRatio = 1024 / 768;
     projectionMatrix.makePerspective(45, aspectRatio, 0.1, 1000);
 
     // lineGrid.render(camera, projectionMatrix, colorProgram);

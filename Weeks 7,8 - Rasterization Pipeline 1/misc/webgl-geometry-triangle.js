@@ -68,6 +68,9 @@ class WebGLGeometryTriangle {
         ];
 
         // Todo #9 - Color Buffer Setup
+        this.colorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
         // 1) this.colorBuffer = /* Create the buffer */;
         // 2) Bind it to the ARRAY_BUFFER binding point
         // 3) Upload the color data into the buffer as 32-bit floats
@@ -112,6 +115,9 @@ class WebGLGeometryTriangle {
         // Color attribute
         if (attributes.vertexColorsAttribute !== undefined && attributes.vertexColorsAttribute >= 0) {
             // Todo #12 - bind color and use vertexAttribPointer for it 
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
+            gl.vertexAttribPointer(attributes.vertexColorsAttribute, 3, gl.FLOAT, false, 0, 0);
+            
             gl.enableVertexAttribArray(attributes.vertexColorsAttribute);
         }
 
