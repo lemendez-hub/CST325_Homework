@@ -61,7 +61,13 @@ class WebGLGeometryGrid {
         // b) East–west lines (varying Z)
         for (let i = -size; i <= size; i++) {
             // Todo #14 - Add positions for the remaining lines
+            positions.push(
+                -size, -1.0, i,
+                size, -1.0, i
+            );
         }
+
+        gl.enable(gl.DEPTH_TEST);
 
         // Convert "#floats" → "#vertices"
         this.bufferItemCount = positions.length / 3;
@@ -74,6 +80,9 @@ class WebGLGeometryGrid {
         // 1) this.positionBuffer = /* gl.createBuffer() */ ;
         // 2) Bind it to gl.ARRAY_BUFFER
         // 3) Upload new Float32Array(positions) with gl.STATIC_DRAW
+        this.positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
         checkGLError(gl, "bufferData(grid positions)");
     }
 
@@ -108,6 +117,7 @@ class WebGLGeometryGrid {
         // - normalization disabled
         // - stride & offset both 0 (tightly packed)
         // gl.vertexAttribPointer(?, ?, ?, ?, ?, ?);
+        gl.vertexAttribPointer(attributes.vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 
         if (attributes.vertexPositionAttribute >= 0)
             gl.enableVertexAttribArray(attributes.vertexPositionAttribute);

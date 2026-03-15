@@ -82,8 +82,8 @@ function createShaders() {
 // -------------------------------------------------------------------------
 // Creates the scene geometry and sets up world matrices
 function createScene() {
-    // lineGrid = new WebGLGeometryGrid(gl);
-    // lineGrid.create(10);
+    lineGrid = new WebGLGeometryGrid(gl);
+    lineGrid.create(10);
 
     triangleGeometry = new WebGLGeometryTriangle(gl);
     triangleGeometry.create();
@@ -122,8 +122,8 @@ function updateAndRender() {
     let aspectRatio = 1024 / 768;
     projectionMatrix.makePerspective(45, aspectRatio, 0.1, 1000);
 
-    // lineGrid.render(camera, projectionMatrix, colorProgram);
-    // checkGLError(gl, "After rendering the line grid");
+    lineGrid.render(camera, projectionMatrix, colorProgram);
+    checkGLError(gl, "After rendering the line grid");
 
     triangleGeometry.render(camera, projectionMatrix, colorProgram);
     checkGLError(gl, "After rendering the triangle");

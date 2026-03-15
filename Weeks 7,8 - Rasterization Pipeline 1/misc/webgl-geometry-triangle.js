@@ -128,8 +128,9 @@ class WebGLGeometryTriangle {
         gl.uniformMatrix4fv(uniforms.worldMatrixUniform, false, this.worldMatrix.clone().transpose().elements);
         // Todo #8 - Upload the remaining transformation matrices
 
-        gl.uniformMatrix4fv(uniforms.viewMatrixUniform, false, camera.cameraWorldMatrix.clone().inverse().transpose().elements);
+        gl.uniformMatrix4fv(uniforms.viewMatrixUniform, false, camera.getViewMatrix().clone().transpose().elements);
         gl.uniformMatrix4fv(uniforms.projectionMatrixUniform, false, projectionMatrix.clone().transpose().elements);
+    
 
         // Finally, draw the triangle:
         // - mode: TRIANGLES (draws one triangle per set of 3 vertices)
