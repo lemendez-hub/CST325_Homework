@@ -112,7 +112,10 @@ function updateAndRender() {
     gl.uniform4f(colorProgram.uniforms.colorUniform, 255, 255, 255, 1);
 
     // todo #9 - animate the color of there sphere
+    var colorAni = (Math.cos(time.secondsElapsedSinceStart) + 1) * 0.5;
+
     // todo #10 - animate the color with non-grayscale values
+    gl.uniform4f(colorProgram.uniforms.colorUniform, 1 - colorAni, colorAni, 1 - colorAni, colorAni);
 
     // todo #3 - render the sphere
     sphereGeometry.render(camera, projectionMatrix, colorProgram);
