@@ -70,19 +70,19 @@ function createScene() {
     groundGeometry.create();
 
     // todo #1 - translate the quad so you can see it
-    groundGeometry.worldMatrix.makeTranslation(0, 0, -10);
+    groundGeometry.worldMatrix.makeTranslation(0, -1, -10);
 
     // todo #2 - rotate and scale the quad to make it "ground-like"
-    groundGeometry.worldMatrix.makeTranslation(0, -5, -10);
-    groundGeometry.worldMatrix.multiply(new Matrix4().makeRotationX(Math.PI / 2));
-    groundGeometry.worldMatrix.multiply(new Matrix4().makeScale(10, 4.5, 10));
+    groundGeometry.worldMatrix.multiply(new Matrix4().makeRotationX(90));
+    groundGeometry.worldMatrix.multiply(new Matrix4().makeScale(10, 10, 10));
 
     // todo #3 - create the sphere geometry
-    // sphereGeometry = ?
-    // sphereGeometry.create(?);
+    sphereGeometry = new WebGLGeometryJSON(gl);
+    sphereGeometry.create(assetLoader.assets.sphereJSON);
 
     // todo #4 - scale and translate the sphere
-    // sphereGeometry.worldMatrix...
+    sphereGeometry.worldMatrix.makeTranslation(0, 0, -5);
+    sphereGeometry.worldMatrix.multiply(new Matrix4().makeScale(0.01, 0.01, 0.01));
 }
 
 // -------------------------------------------------------------------------
@@ -114,4 +114,5 @@ function updateAndRender() {
     // todo #10 - animate the color with non-grayscale values
 
     // todo #3 - render the sphere
+    sphereGeometry.render(camera, projectionMatrix, colorProgram);
 }
