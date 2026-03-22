@@ -109,6 +109,7 @@ function updateAndRender() {
     groundGeometry.render(camera, projectionMatrix, colorProgram);
 
     // todo #5 - change color for the sphere
+    gl.uniform4f(colorProgram.uniforms.colorUniform, 255, 255, 255, 1);
 
     // todo #9 - animate the color of there sphere
     // todo #10 - animate the color with non-grayscale values

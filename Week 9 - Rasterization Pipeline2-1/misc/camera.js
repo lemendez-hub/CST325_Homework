@@ -22,7 +22,8 @@ class Camera {
   getForward() {
     // todo #6 - pull out the forward direction from the world matrix and return as a vector
     //         - recall that the camera looks in the "backwards" direction
-    return new Vector3();
+    var camE = this.cameraWorldMatrix.elements;
+    return new Vector3(-camE[8], -camE[9], -camE[10]).normalize;
   }
 
   // -------------------------------------------------------------------------
