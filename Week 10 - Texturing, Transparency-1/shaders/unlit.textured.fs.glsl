@@ -9,8 +9,8 @@ varying vec2 textCoords;
 
 void main(void) {
     // todo #5 - sample a color from the texture and visualize
-
-    gl_FragColor = vec4(textCoords.x, textCoords.y, 0.0, 1.0);
+    vec4 texColor = texture2D(uTexture, textCoords);
+    gl_FragColor = vec4(texColor.rgb, uAlpha);
 }
 
 
