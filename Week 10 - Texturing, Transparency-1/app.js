@@ -38,6 +38,9 @@ async function initializeAndStartRendering() {
     // todo #8
     // - enable depth test (z-buffering)
     // - enable backface culling
+    gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.CULL_FACE);
+    gl.cullFace(gl.BACK);
 
     updateAndRender();
 }
@@ -118,6 +121,8 @@ function updateAndRender() {
     // todo #9
     //   - enable blending
     //   - set blend mode source to gl.SRC_ALPHA and destination to gl.ONE_MINUS_SRC_ALPHA
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     // todo #11 apply the painter's algorithm
 
@@ -128,4 +133,5 @@ function updateAndRender() {
     }
 
     // todo - disable blending
+    gl.disable(gl.BLEND);
 }
