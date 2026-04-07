@@ -55,18 +55,28 @@ class WebGLGeometryJSON {
         if (rawImage) {
             // todo #4
             // 1. create the texture (uncomment when ready)
-            // this.texture = ?
+            this.texture = gl.createTexture();
 
             // 2. todo bind the texture
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
             // needed for the way browsers load images, ignore this
             this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
 
             // 3. todo set wrap modes (for s and t) for the texture
+            gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+            gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+
             // 4. todo set filtering modes (magnification and minification)
+            gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+            gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+            
             // 5. send the image WebGL to use as this texture
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, rawImage);
 
             // todo #6 - set up trilinear filtering
+            gl.generateMipmap(this.gl.TEXTURE_2D);
+            gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR_MIPMAP_LINEAR);
 
             // We're done for now, unbind
             this.gl.bindTexture(this.gl.TEXTURE_2D, null);
@@ -122,9 +132,10 @@ class WebGLGeometryJSON {
         if (this.texture && uniforms.textureUniform) {
             // todo #6
             // uncomment when ready
-            // this.gl.activeTexture(?);
-            // this.gl.bindTexture(?, ?);
+            this.gl.activeTexture(gl.TEXTURE0);
+            this.gl.bindTexture(gl.TEXTURE_2D, this.texture);
             // send texture uniform to shader
+            this.gl.uniform1i(uniforms.textureUniform, 0);
         }
 
         // Send our uniforms to the shader

@@ -91,6 +91,8 @@ class WebGLGeometryQuad {
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, rawImage);
 
             // todo #6 - set up trilinear filtering
+            gl.generateMipmap(gl.TEXTURE_2D);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
 
             // We're done for now, unbind
             this.gl.bindTexture(this.gl.TEXTURE_2D, null);
