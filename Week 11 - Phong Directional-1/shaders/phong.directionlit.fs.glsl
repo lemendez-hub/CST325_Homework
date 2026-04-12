@@ -13,11 +13,13 @@ void main(void) {
     // todo #1 normalize the light direction and store in a separate variable
     vec3 normalizedLD = normalize(uLightDirection);
     // todo #2 normalize the world normal and store in a separate variable
-    vec3 normalizedWS = normalize(vWorldNormal);
+    vec3 normalizedWN = normalize(vWorldNormal);
     // todo #3 calculate the lambert term
+    float lambert = max(dot(normalizedWN, normalizedLD), 0.0);
 
     // specular contribution
     // todo #4 in world space, calculate the direction from the surface point to the eye (normalized)
+    vec3 direction = normalize(uCameraPosition - vWorldPosition);
     // todo #5 in world space, calculate the reflection vector (normalized)
     // todo #6 calculate the phong term
 
@@ -35,5 +37,5 @@ void main(void) {
     // add "diffuseColor" and "specularColor" when ready
     vec3 finalColor = ambient; // + diffuseColor + specularColor;
 
-    gl_FragColor = vec4(normalizedWS, 1.0);
+    gl_FragColor = vec4(direction, 1.0);
 }

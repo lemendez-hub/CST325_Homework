@@ -11,7 +11,7 @@ let sphereGeometry = null; // this will be created after loading from a file
 let groundGeometry = null;
 
 const projectionMatrix = new Matrix4();
-const lightDirection = new Vector4(0, 5, 0, 0);
+const lightDirection = new Vector4(1, 1, 1, 1);
 
 // the shader that will be used by each piece of geometry (they could each use their own shader but in this case it will be the same)
 let phongShaderProgram;
