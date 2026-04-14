@@ -105,12 +105,38 @@ function updateAndRender() {
     // - Increment/decrement 'yaw' and 'pitch' variables based on input. These values 
     //   should represent absolute angles rather than incremental transformations, ensuring 
     //   statelessness across frames.
+    if(appInput.up)
+    {
+        pitch += 60 * time.deltaTime;
+    }
+    if(appInput.down)
+    {
+        pitch -= 60 * time.deltaTime;
+    }
+    if(appInput.left)
+    {
+        yaw -= 60 * time.deltaTime;
+    }
+    if(appInput.right)
+    {
+        yaw += 60 * time.deltaTime;
+    }
     // - Clamp pitch angle to [-89, 89] degrees to prevent extreme rotations (e.g., gimbal lock).
+    pitch = Math.max(-89, Math.min(89, pitch));
     // - Create rotation matrices for yaw and pitch based on current angles.
+    const yawMat = new Matrix4().makeRotationY(yaw);
+    const pitchMat = new Matrix4().makeRotationX(pitch);
     // - Combine yaw and pitch into a single matrix (does the order matter?)
     //   Since the transformations are not accumulated over frames, each frame recalculates
     //   the rotation from scratch, ensuring stateless behavior.
+    const yawpitchMat = yawMat.multiply(pitchMat);
     // - Use the matrix to transform the original/unchanged lightDirection
+    const ogLightDirection = new Vector4(0, 5, 0, 0);
+    const rotatedLight = yawpitchMat.multiplyVector(ogLightDirection);
+    lightDirection.x = rotatedLight.x;
+    lightDirection.y = rotatedLight.y;
+    lightDirection.z = rotatedLight.z;
+
 
     time.update();
     camera.update(time.deltaTime);

@@ -36,7 +36,7 @@ void main(void) {
 
     // todo #9
     // add "diffuseColor" and "specularColor" when ready
-    vec3 finalColor = ambient; // + diffuseColor + specularColor;
+    vec3 finalColor = ambient + diffuseColor + specularColor;
 
-    gl_FragColor = vec4(specularColor, 1.0);
+    gl_FragColor = vec4(finalColor, 1.0);
 }
