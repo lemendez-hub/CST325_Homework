@@ -31,12 +31,12 @@ void main(void) {
     vec3 albedo = texture2D(uTexture, vTexcoords).rgb;
 
     vec3 ambient = albedo * 0.1;
-    // vec3 diffuseColor = todo
-    // vec3 specularColor = todo
+    vec3 diffuseColor = albedo * lambert;
+    vec3 specularColor = vec3(0.3, 0.3, 0.3) * phong;
 
     // todo #9
     // add "diffuseColor" and "specularColor" when ready
     vec3 finalColor = ambient; // + diffuseColor + specularColor;
 
-    gl_FragColor = vec4(vec3(phong), 1.0);
+    gl_FragColor = vec4(specularColor, 1.0);
 }
