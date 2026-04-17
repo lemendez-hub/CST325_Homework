@@ -8,10 +8,11 @@ const camera = new OrbitCamera(appInput);
 const assetLoader = new AssetLoader();
 
 let sphereGeometry = null; // this will be created after loading from a file
+let barrelGeo = null;
 let groundGeometry = null;
 
 const projectionMatrix = new Matrix4();
-const lightPosition = new Vector4(4, 1.5, 0, 1);
+const lightPosition = new Vector4(0, 5, 0, 0);
 
 // the shader that will be used by each piece of geometry (they could each use their own shader but in this case it will be the same)
 let phongShaderProgram;
@@ -25,6 +26,8 @@ const assetList = [
     { name: 'phongTextFS', url: './shaders/phong.pointlit.fs.glsl', type: 'text' },
     { name: 'sphereJSON', url: './data/sphere.json', type: 'json' },
     { name: 'marbleImage', url: './data/marble.jpg', type: 'image' },
+    { name: 'barrelJSON', url: './data/barrel.json', type: 'json' },
+    { name: 'barrelImage', url: './data/barrel.png', type: 'image' },
     { name: 'crackedMudImage', url: './data/crackedmud.png', type: 'image' }
 ];
 
@@ -83,6 +86,9 @@ function createScene() {
     sphereGeometry = new WebGLGeometryJSON(gl, phongShaderProgram);
     sphereGeometry.create(assetLoader.assets.sphereJSON, assetLoader.assets.marbleImage);
 
+    barrelGeo = new WebGLGeometryJSON(gl, phongShaderProgram);
+    barrelGeo.create(assetLoader.assets.barrelJSON, assetLoader.assets.barrelImage);
+
     // Scaled it down so that the diameter is 3
     scale = new Matrix4().makeScale(0.03, 0.03, 0.03);
 
@@ -127,4 +133,5 @@ function updateAndRender() {
     projectionMatrix.makePerspective(45, aspectRatio, 0.1, 1000);
     groundGeometry.render(camera, projectionMatrix, phongShaderProgram);
     sphereGeometry.render(camera, projectionMatrix, phongShaderProgram);
+    barrelGeo.render(camera, projectionMatrix, phongShaderProgram);
 }
