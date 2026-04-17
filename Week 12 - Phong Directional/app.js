@@ -86,9 +86,6 @@ function createScene() {
     sphereGeometry = new WebGLGeometryJSON(gl, phongShaderProgram);
     sphereGeometry.create(assetLoader.assets.sphereJSON, assetLoader.assets.marbleImage);
 
-    barrelGeo = new WebGLGeometryJSON(gl, phongShaderProgram);
-    barrelGeo.create(assetLoader.assets.barrelJSON, assetLoader.assets.barrelImage);
-
     // Scaled it down so that the diameter is 3
     scale = new Matrix4().makeScale(0.03, 0.03, 0.03);
 
@@ -98,6 +95,14 @@ function createScene() {
     sphereGeometry.worldMatrix.makeIdentity();
     sphereGeometry.worldMatrix.multiply(translation).multiply(scale);
 
+    barrelGeo = new WebGLGeometryJSON(gl, phongShaderProgram);
+    barrelGeo.create(assetLoader.assets.barrelJSON, assetLoader.assets.barrelImage);
+
+    let barrelScal = new Matrix4().makeScale(0.3, 0.3, 0.3);
+    let barrelTrans = new Matrix4().makeTranslation(-5, 2, -5);
+
+    barrelGeo.worldMatrix.makeIdentity();
+    barrelGeo.worldMatrix.multiply(barrelTrans).multiply(barrelScal);
 }
 
 // -------------------------------------------------------------------------
