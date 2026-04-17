@@ -10,12 +10,14 @@ const assetLoader = new AssetLoader();
 let sphereGeometry = null; // this will be created after loading from a file
 let barrelGeo = null;
 let groundGeometry = null;
+let sphereLightGeo = null;
 
 const projectionMatrix = new Matrix4();
 const lightPosition = new Vector4(0, 5, 0, 0);
 
 // the shader that will be used by each piece of geometry (they could each use their own shader but in this case it will be the same)
 let phongShaderProgram;
+let flatColorShaderProgram;
 
 // auto start the app when the html page is ready
 window.onload = window['initializeAndStartRendering'];
@@ -28,7 +30,9 @@ const assetList = [
     { name: 'marbleImage', url: './data/marble.jpg', type: 'image' },
     { name: 'barrelJSON', url: './data/barrel.json', type: 'json' },
     { name: 'barrelImage', url: './data/barrel.png', type: 'image' },
-    { name: 'crackedMudImage', url: './data/crackedmud.png', type: 'image' }
+    { name: 'crackedMudImage', url: './data/crackedmud.png', type: 'image' },
+    { name: 'flatColorVS', url: './shaders/flat.color.vs.glsl', type: 'text'},
+    { name: 'flatColorFS', url: './shaders/flat.color.fs.glsl', type: 'text'}
 ];
 
 let yaw = 0;
@@ -68,6 +72,15 @@ function createShaders() {
         cameraPositionUniform: gl.getUniformLocation(phongShaderProgram, "uCameraPosition"),
         textureUniform: gl.getUniformLocation(phongShaderProgram, "uTexture"),
     };
+
+    const flatColorVS = assetLoader.assets.flatColorVS;
+    const flatColorFS = assetLoader.assets.flatColorFS;
+    flatColorShaderProgram = createCompiledAndLinkedShaderProgram(gl, flatColorVS, flatColorFS);
+    flatColorShaderProgram.attributes = {vertexPositionAttribute: gl.getAttribLocation(flatColorShaderProgram, "aVertexPos")};
+    flatColorShaderProgram.uniforms = {worldMatrixUniform: gl.getUniformLocation(flatColorShaderProgram, "uWorldMatrix"),
+        viewMatrixUniform: gl.getUniformLocation(flatColorShaderProgram, "uViewMatrix"),
+        projectionMatrixUniform: gl.getUniformLocation(flatColorShaderProgram, "uProjectionMatrix")
+    };
 }
 
 // -------------------------------------------------------------------------
@@ -103,6 +116,14 @@ function createScene() {
 
     barrelGeo.worldMatrix.makeIdentity();
     barrelGeo.worldMatrix.multiply(barrelTrans).multiply(barrelScal);
+
+    sphereLightGeo = new WebGLGeometryJSON(gl, flatColorShaderProgram);
+    sphereLightGeo.create(assetLoader.assets.sphereJSON, null);
+
+    let sphereLightScale = new Matrix4().makeScale(0.1, 0.1, 0.1);
+    let sphereLightTrans = new Matrix4().makeTranslation(lightPosition.x, lightPosition.y, lightPosition.z);
+    sphereLightGeo.worldMatrix.makeIdentity();
+    sphereLightGeo.worldMatrix.multiply(sphereLightTrans).multiply(sphereLightScale);
 }
 
 // -------------------------------------------------------------------------
@@ -118,6 +139,11 @@ function updateAndRender() {
     lightPosition.x = rotatedLight.x;
     lightPosition.y = rotatedLight.y;
     lightPosition.z = rotatedLight.z;
+
+    let sphereLightScale = new Matrix4().makeScale(0.01, 0.01, 0.01);
+    let sphereLightTrans = new Matrix4().makeTranslation(lightPosition.x, lightPosition.y, lightPosition.z);
+    sphereLightGeo.worldMatrix.makeIdentity();
+    sphereLightGeo.worldMatrix.multiply(sphereLightTrans).multiply(sphereLightScale);
 
     time.update();
     camera.update(time.deltaTime);
@@ -139,4 +165,5 @@ function updateAndRender() {
     groundGeometry.render(camera, projectionMatrix, phongShaderProgram);
     sphereGeometry.render(camera, projectionMatrix, phongShaderProgram);
     barrelGeo.render(camera, projectionMatrix, phongShaderProgram);
+    sphereLightGeo.render(camera, projectionMatrix, flatColorShaderProgram);
 }
