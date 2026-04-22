@@ -12,6 +12,6 @@
 
         // todo #4 convert clip space depth into NDC and remap from [-1, 1] to [0, 1]
         // The value of vDepth is temporarily set to gl_Position.z;
-        vDepth = gl_Position.z;  
+        vDepth = gl_Position.z * 0.5 + 0.5;
     }
 
