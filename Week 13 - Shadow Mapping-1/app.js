@@ -209,7 +209,7 @@ function updateAndRender() {
     gl.viewport(0, 0, fbo.width, fbo.height);
 
     // todo #2 - set up the view volume boundaries
-    // shadowProjectionMatrix.makeOrthographic(...);
+    shadowProjectionMatrix.makeOrthographic(-10, 10, 10, -10, 1.0, 20);
 
     gl.disable(gl.CULL_FACE);
     groundGeometry.render(lightCamera, shadowProjectionMatrix, depthWriteProgram);
