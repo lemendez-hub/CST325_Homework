@@ -193,7 +193,9 @@ function updateAndRender() {
     // todo #1 - Set up a camera that points in the direction of the light at a
     // reasonably close position such that the scene will be in the view volume.
     // We will set up the view volume boundaries with an orthographics projection later.
-    lightCamera.cameraWorldMatrix.makeLookAt(lightPos.x, lightPos.y, lightPos.z);
+    lightCamera.cameraWorldMatrix.makeLookAt(new Vector4(lightPos.x, lightPos.y, lightPos.z, 1),
+    new Vector4(0, 0, 0, 1),
+    new Vector4(0, 1, 0, 0));
 
     camera.update(time.deltaTime);
 
