@@ -46,16 +46,13 @@ void main(void) {
 
     // use this as part of todo #10
     float bias = 0.004;
+    float shadow = 1.0;
 
     // todo #9
-    // gl_FragColor = vec4(finalColor, 1.0); // remove this when you are ready to add shadows
-    //if (/* in shadow*/) {
-    //   gl_FragColor = vec4(ambient, 1.0);
-    //} else {
-    //    gl_FragColor = vec4(finalColor, 1.0);
-    //}
-
-    gl_FragColor = vec4(lightDepth, lightDepth, lightDepth, 1.0);
-
+    if (lightDepth > shadowColor.r + bias) {
+      gl_FragColor = vec4(ambient, 1.0);
+    } else {
+       gl_FragColor = vec4(finalColor, 1.0);
+    }
 }
 
