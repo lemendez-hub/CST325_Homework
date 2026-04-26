@@ -10,6 +10,8 @@ varying vec2 vTexCoords;
 varying vec3 vWorldNormal;
 varying vec3 vWorldPosition;
 
+varying vec4 vLightSpacePosition;
+
 void main(void) {
     vec3 worldNormal01 = normalize(vWorldNormal);
     vec3 directionToEye01 = normalize(uCameraPosition - vWorldPosition);
@@ -29,17 +31,18 @@ void main(void) {
 
     // todo #6
     // transform the world position into the lights clip space (clip space and NDC will be the same for orthographic projection)
-    vec4 lightSpaceNDC = uLightVPMatrix * vec4(vWorldPosition, 1.0);
+    // vec4 lightSpaceNDC = uLightVPMatrix * vec4(vWorldPosition, 1.0);
+    vec3 lightSpaceNDC = vLightSpacePosition.xyz / vLightSpacePosition.w;
 
     // scale and bias the light-space NDC xy coordinates from [-1, 1] to [0, 1]
     vec2 lightSpaceUV = lightSpaceNDC.xy * 0.5 + 0.5;
 
     // todo #7
     // Sample from the shadow map texture using the previously calculated lightSpaceUV
-    // vec4 shadowColor = texture2D...
+    vec4 shadowColor = texture2D(uShadowTexture, lightSpaceUV);
 
     // todo #8 scale and bias the light-space NDC z coordinate from [-1, 1] to [0, 1]
-    // float lightDepth = ...;
+    float lightDepth = lightSpaceNDC.z * 0.5 + 0.5;
 
     // use this as part of todo #10
     float bias = 0.004;
@@ -52,8 +55,7 @@ void main(void) {
     //    gl_FragColor = vec4(finalColor, 1.0);
     //}
 
-    vec4 shadowColor = texture2D(uShadowTexture, vTexCoords);
-    gl_FragColor = vec4(lightSpaceUV.x, lightSpaceUV.y, 0.0, 1.0);
+    gl_FragColor = vec4(lightDepth, lightDepth, lightDepth, 1.0);
 
 }
 
